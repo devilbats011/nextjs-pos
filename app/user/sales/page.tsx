@@ -1,17 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Breadcrumb from "@/app/components/Breadcrumb";
 import SearchItem from "@/app/components/SearchItem";
+import SonnerToastEg from "@/app/components/SonnerToastEg";
 import useStore from "@/hooks/zustand/useStore";
-import { useEffect } from "react";
+
 
 export default function Page() {
   const { setOrderItems, items  } = useStore((state) => state);
-
-  //   useEffect(() => {
-  //     console.log(items, "ii");
-  //     console.log(orderItems, "ii2");
-  //   }, [orderItems, ""]);
 
   function searchItemOnClick(item: any, event: any | undefined | null) {
     console.log(event, item);
@@ -31,6 +28,9 @@ export default function Page() {
           inputSearchStyle={{ border: "1px solid blue", padding: "6px" }}
           listItemStyle={{ padding: "10px 0" }}
         />
+
+        <SonnerToastEg />
+
       </section>
     </>
   );

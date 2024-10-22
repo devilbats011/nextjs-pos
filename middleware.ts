@@ -6,9 +6,7 @@ function startWith(request: NextRequest, url: string) {
 }
 
 async function checkSignIn(request: NextRequest) {
-  request.cookies.set("sidebar", '1');
-
-
+  // request.cookies.set("sidebar", '1');
   if (!request.cookies.has("session")) {
     return false;
   }

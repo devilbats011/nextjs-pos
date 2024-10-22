@@ -1,23 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
-export default create((set: any) => ({
+export default create((set: any, get: any) => ({
   items: [
     {
       id: 1,
-      name: "11name",
-      quantity: 10,
+      name: "Shawarma",
+      quantity: 1,
       price: 10,
     },
     {
       id: 2,
-      name: "22name",
-      quantity: 10,
+      name: "Ciken Wing",
+      quantity: 1,
       price: 22,
     },
   ],
   orderItems: [],
-  setOrderItems: (item: any) =>
+  setOrderItems: (item: unknown) =>
     set((state: any) => {
       const orderItems = state.getOrderItems();
       orderItems.push(item);
@@ -30,20 +30,6 @@ export default create((set: any) => ({
       return JSON.parse(orderItems);
     }
     return [];
-  },
-  getTotalOrderItemsPrice: () => {
-    const orderItems = sessionStorage.getItem("orderItems");
-    let total = 0
-    if (orderItems) {
-       total = JSON.parse(orderItems).reduce(
-        (total: any, item: any) => total + item.price,
-        0
-      );
-      //decimal 2 point
-      total = !total ? 0 : total;
-      return total.toFixed(2);
-    }
-    return total.toFixed(2);
   },
   clearOrderItems: () => {
     set({ orderItems: [] });
@@ -60,6 +46,41 @@ export default create((set: any) => ({
       return { orderItems: orderItems };
     });
   },
+  groupedItemList: () => {
+    const orderItems = get().getOrderItems();
+    const newArray = orderItems.reduce((acc: any, item: any) => {
+      const existingItem = acc.find((i: any) => i.id === item.id);
+      if (existingItem) {
+        // If item with same id exists, sum quantity and total price
+        existingItem.quantity += item.quantity;
+        existingItem.price += item.quantity * item.price;
+      } else {
+        // Otherwise, add the new item with calculated total price
+        acc.push({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.quantity * item.price,
+        });
+      }
+      return acc;
+    }, []);
+    return newArray;
+  },
+  getTotalOrderItemsPrice: () => {
+    const groupedItemList = get().groupedItemList();
+    let total = 0;
+    if (groupedItemList) {
+      total = groupedItemList.reduce(
+        (total: any, item: any) => total + item.price * item.quantity,
+        0
+      );
+      //decimal 2 point
+      total = !total ? 0 : total;
+      return total.toFixed(2);
+    }
+    return total.toFixed(2);
+  },
   bears: 0,
-  updateBears: (newBears: any) => set({ bears: newBears }),
+  updateBears: (newBears: unknown) => set({ bears: newBears }),
 }));
