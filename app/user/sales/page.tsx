@@ -2,16 +2,18 @@
 "use client";
 
 import Breadcrumb from "@/app/components/Breadcrumb";
+import Header1 from "@/app/components/Headers/Header1";
 import SearchItem from "@/app/components/SearchItem";
-import SonnerToastEg from "@/app/components/SonnerToastEg";
+import ToasterMessage from "@/app/components/ToasterMessage";
+import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useStore from "@/hooks/zustand/useStore";
-
 
 export default function Page() {
   const { setOrderItems, items  } = useStore((state) => state);
-
+  const { toaster } = useSonnerToast();
   function searchItemOnClick(item: any, event: any | undefined | null) {
     console.log(event, item);
+    toaster(<ToasterMessage> Item Added </ToasterMessage>);
     setOrderItems(item);
   }
 
@@ -19,7 +21,7 @@ export default function Page() {
     <>
       <section style={{ border: "1px solid blue", padding: "16px" }}>
         <Breadcrumb crumbs={[{ name: "Sales", href: "#" }]} />
-        <h1>Page Sales</h1>
+        <Header1>Page Sales</Header1>
 
         <SearchItem
           items={items}
@@ -28,9 +30,6 @@ export default function Page() {
           inputSearchStyle={{ border: "1px solid blue", padding: "6px" }}
           listItemStyle={{ padding: "10px 0" }}
         />
-
-        <SonnerToastEg />
-
       </section>
     </>
   );

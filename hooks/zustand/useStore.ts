@@ -54,13 +54,15 @@ export default create((set: any, get: any) => ({
         // If item with same id exists, sum quantity and total price
         existingItem.quantity += item.quantity;
         existingItem.price += item.quantity * item.price;
+
       } else {
         // Otherwise, add the new item with calculated total price
         acc.push({
           id: item.id,
           name: item.name,
           quantity: item.quantity,
-          price: item.quantity * item.price,
+          price: item.quantity * item.price, // total price of the item
+          itemPrice: item.price // a single price of the item
         });
       }
       return acc;
@@ -68,10 +70,10 @@ export default create((set: any, get: any) => ({
     return newArray;
   },
   getTotalOrderItemsPrice: () => {
-    const groupedItemList = get().groupedItemList();
+    const arr = get().getOrderItems();
     let total = 0;
-    if (groupedItemList) {
-      total = groupedItemList.reduce(
+    if (arr) {
+      total = arr.reduce(
         (total: any, item: any) => total + item.price * item.quantity,
         0
       );

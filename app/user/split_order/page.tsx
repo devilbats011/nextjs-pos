@@ -1,9 +1,14 @@
 "use client";
 
 import Breadcrumb from "@/app/components/Breadcrumb";
+import ButtonBig from "@/app/components/Buttons/ButtonBig";
+
 import ItemList from "@/app/components/ItemList/page";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+
+  const r = useRouter();
 
   return (
     <>
@@ -15,13 +20,16 @@ export default function Page() {
           { name: "Split Order", href: "#" }, // /user/split_order
         ]}
       />
-      <button style={{ border: "1px solid red", padding: "4px", margin: '12px 0' }}>
+
+      <ButtonBig buttonProps={{ onClick: () => {r.push("/user/charge_order")}, style: { margin: "1rem 0" } }} >
         Charged
-      </button>
+      </ButtonBig>
+
       <ItemList
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         disableDeleteButton
+        disableTotalItems
       />
     </>
   );

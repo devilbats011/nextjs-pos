@@ -1,32 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 
-const QuantityItem: React.FC<any> = ({ ...rest }) => {
-
+const QuantityItem: React.FC<any> = ({ item,...rest }) => {
   if(rest.disableAddRemoveButton) {
-    return <span style={{marginLeft: "10px", marginRight: "10px"}}> x{rest.quantity} </span>;
+    return <span style={{marginLeft: "1rem", marginRight: "1rem"}}> RM {item?.itemPrice} x{item?.quantity} </span>;
   }
 
   return (
     <div
       style={{
         display: "inline-block",
-        margin: "0 .4rem",
-        width: "2rem",
+        margin: "0 .6rem",
+        padding: "0rem 0.5rem",
         position: "relative",
+        border: "1px solid black",
+        textAlign: "center",
       }}
     >
-      <input
+      {item.quantity}
+      {/* <input
         type="text"
         placeholder="0"
-        defaultValue={rest.quantity}
+        defaultValue={item.quantity}
         style={{
           width: "100%",
-          border: "1px solid black",
+
           paddingLeft: ".4rem",
           borderRadius: "2px",
         }}
-      />
+      /> */}
     </div>
   );
 };

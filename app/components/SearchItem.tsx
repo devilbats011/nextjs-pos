@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ItemsReadonly from "./ItemsReadonly/page";
 
 interface SearchItemProps {
   items?: any[];
@@ -35,19 +36,10 @@ const SearchItem: React.FC<SearchItemProps> = ({
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      <ul style={listItemStyle}>
-        {filteredItems.map((item: any, index: number | string) => (
-          <li style={itemStyle} key={index}>
-            <code>{JSON.stringify(item)}</code>
-            <button
-              style={{ border: "1px solid blue", padding: "10px", margin: '6px' }}
-              onClick={itemOnClick.bind(this, item)}
-            >
-              CHARGE
-            </button>
-          </li>
-        ))}
-      </ul>
+      <ItemsReadonly
+        item={filteredItems}
+        listOnClick={(item: any, event: any) => itemOnClick(item, event)}
+      />
     </div>
   );
 };

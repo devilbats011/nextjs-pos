@@ -9,7 +9,7 @@ const ItemDeleteButton: React.FC<any> = ({ ...rest }) => {
 
   return (
     <button
-    style={{ border: "1px solid red", padding: "4px" }}
+    style={{ border: "1px solid red", padding: "4px", margin: '0 1rem' }}
     onClick={() => {
       return null;
       //   rest.deleteOrderItem(item)
