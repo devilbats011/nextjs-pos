@@ -2,8 +2,11 @@
 
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import Header1 from "@/app/components/Headers/Header1";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col gap-4">
       <Header1> Items </Header1>
@@ -48,7 +51,7 @@ export default function Page() {
         }
         buttonProps={{
           onClick: () => {
-            console.log("clicked");
+            router.push('/user/items_list');
           },
         }}
       >
@@ -100,7 +103,7 @@ export default function Page() {
         }
         buttonProps={{
           onClick: () => {
-            console.log("clicked");
+            router.push('/user/category');
           },
         }}
       >

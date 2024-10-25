@@ -1,12 +1,12 @@
 import { toast as t } from 'sonner';
 import React from 'react';
 
-export const useSonnerToast = ()  => {
+export const useSonnerToast = (duration = 1000)  => {
 
   const toaster = (ToasterMessage: React.ReactNode | string) => {
     t(ToasterMessage, {
       position: 'top-center',
-      duration: 1000,
+      duration,
     });
   };
   return { toaster };

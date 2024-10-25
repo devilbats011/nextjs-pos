@@ -6,40 +6,46 @@ import ItemPrice from "./ItemsReadonlyComponents/ItemPrice";
 import ItemRepresentative from "./ItemsReadonlyComponents/ItemRepresentative";
 
 export default function ItemsReadonly({
-  item = [],
+  item = [], //TODO MUST remove this later .. after remove - check if there any page error using this component..
+  items = [],
   listProps,
+  disablePrice,
+  disableRepresentative,
   listOnClick,
 }: {
-  item: any[];
+  item?: any[];
+  items?: any[];
+  disablePrice?: boolean;
+  disableRepresentative?: boolean;
   listProps?: React.DetailedHTMLProps<
     React.LiHTMLAttributes<HTMLLIElement>,
     HTMLLIElement
   >;
   listOnClick?: any;
 }) {
-  //    const { ...dataStore } = useStore((state)=>state)
-
   return (
     <div className="py-4">
       <ol className="flex flex-col gap-4">
-        {/* {...dataStore.groupedItemList().map((item: any, index: any) => { */}
-        {item.map((item: any, index: any) => {
+        {items.map((item: any, index: any) => {
           return (
             <li
-              {...listProps}    
-              key={index}
+              {...listProps}
+              key={index + item.name}
+              // key={Math.floor(Math.random() * 1000) + 1}
               style={{
                 padding: "1.4rem 0",
-                // border: "1px solid #191A2C",
+                // color: '#3F2F67',
               }}
-              className="flex flex-row justify-center items-center cursor-pointer w-full gap-4 border border-gray-400  hover:border-gray-600 hover:bg-gray-100 transition-colors"
+              className="flex flex-row justify-between items-center cursor-pointer w-full gap-4 border border-gray-400  hover:border-gray-600 hover:bg-gray-100 transition-colors"
               onClick={(event) => {
                 listOnClick && listOnClick(item, event);
               }}
             >
-              <ItemRepresentative />
+              <ItemRepresentative
+                disableRepresentative={disableRepresentative}
+              />
               <ItemName name={item.name} />
-              <ItemPrice price={item.price} />
+              <ItemPrice price={item.price} disablePrice={disablePrice} />
             </li>
           );
         })}

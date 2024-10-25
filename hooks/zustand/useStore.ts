@@ -1,21 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
+import itemsUseStore from "./itemsUseStore";
+import categoryUseStore from "./categoryUseStore";
 
 export default create((set: any, get: any) => ({
-  items: [
-    {
-      id: 1,
-      name: "Shawarma",
-      quantity: 1,
-      price: 10,
-    },
-    {
-      id: 2,
-      name: "Ciken Wing",
-      quantity: 1,
-      price: 22,
-    },
-  ],
+  ...itemsUseStore(set, get),
+  ...categoryUseStore(set, get),
   orderItems: [],
   setOrderItems: (item: unknown) =>
     set((state: any) => {
@@ -54,7 +44,6 @@ export default create((set: any, get: any) => ({
         // If item with same id exists, sum quantity and total price
         existingItem.quantity += item.quantity;
         existingItem.price += item.quantity * item.price;
-
       } else {
         // Otherwise, add the new item with calculated total price
         acc.push({
@@ -62,7 +51,7 @@ export default create((set: any, get: any) => ({
           name: item.name,
           quantity: item.quantity,
           price: item.quantity * item.price, // total price of the item
-          itemPrice: item.price // a single price of the item
+          itemPrice: item.price, // a single price of the item
         });
       }
       return acc;

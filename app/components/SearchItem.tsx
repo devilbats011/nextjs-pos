@@ -37,7 +37,7 @@ const SearchItem: React.FC<SearchItemProps> = ({
       />
 
       <ItemsReadonly
-        item={filteredItems}
+        items={filteredItems}
         listOnClick={(item: any, event: any) => itemOnClick(item, event)}
       />
     </div>
