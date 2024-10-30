@@ -3,19 +3,28 @@
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import ItemsReadonly from "@/app/components/ItemsReadonly/page";
+import ToasterMessage from "@/app/components/ToasterMessage";
+import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useStore from "@/hooks/zustand/useStore";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
 
 export default function Page() {
   const { ...dataStore } = useStore((state) => state);
   const router = useRouter();
-
+  const searchParams = useSearchParams()
+  const { toaster } = useSonnerToast();
   const [category, setCategory] = useState([]);
 
   useEffect(() => {
     dataStore.getCategory().then((data: any) => setCategory(data));
-  }, []);
+    const toast = searchParams.get('toast');
+    if(toast) {
+      toaster(<ToasterMessage> {toast} </ToasterMessage>)
+    }
+
+  }, ['']);
 
   return (
     <>
@@ -38,17 +47,15 @@ export default function Page() {
           + Add Category
         </ButtonBig>
 
-        <ItemsReadonly items={category} disablePrice disableRepresentative />
-        {/* <ButtonBig
-          color="secondary"
-          buttonProps={{
-            onClick: async () => {
-              router.refresh();
-            },
+        <ItemsReadonly
+          items={category}
+          disablePrice
+          disableRepresentative
+          listOnClick={(item: { id: any }, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+            event.preventDefault();
+            router.push(`/user/category/edit/${item.id}`);
           }}
-        >
-          refresh
-        </ButtonBig> */}
+        />
       </div>
     </>
   );

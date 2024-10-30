@@ -5,14 +5,26 @@ import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import ItemsReadonly from "@/app/components/ItemsReadonly/page";
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
   const dataStore = useStore((state) => state);
 
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    (async ()=>{
+      const x = await dataStore.getItems();
+      setItems(x);
+
+    })()
+
+  }, []);
+
   function pushToItemAddPage(item: any, event: any) {
     console.log(item, event);
-    router.push(`/user/item_add/${item.id}`);
+    router.push(`/user/items/edit/${item.id}`);
   }
 
   return (
@@ -25,12 +37,12 @@ export default function Page() {
           ]}
         />
         <ButtonBig
-          buttonProps={{ onClick: () => router.push("/user/item_add") }}
+          buttonProps={{ onClick: () => router.push("/user/items/add") }}
         >
           + Add Item
         </ButtonBig>
 
-        <ItemsReadonly items={dataStore.items} listOnClick={pushToItemAddPage} />
+        <ItemsReadonly items={items} listOnClick={pushToItemAddPage} />
 
         {false && <ButtonBig> Show More </ButtonBig>}
 

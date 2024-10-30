@@ -21,7 +21,7 @@ export default function Page() {
       <Breadcrumb
         crumbs={[
           { name: "Items", href: "/user/items" },
-          { name: "Items List", href: "/user/item_list" },
+          { name: "Items List", href: "/user/items/list" },
           { name: "Add Item", href: "#" },
         ]}
       />

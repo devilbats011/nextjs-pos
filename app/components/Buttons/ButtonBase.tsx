@@ -10,6 +10,7 @@ export default function ButtonBase({
   variant,
   color = "primary",
   buttonProps,
+  key,
 }: ButtonBaseProps) {
   const [colorGroup, setColorGroup] = useState(variant.primary);
 
@@ -25,13 +26,29 @@ export default function ButtonBase({
         setColorGroup(variant.warning);
         break;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color]);
 
+  const [loading, setLoading] = useState(false);
+
   return (
-    <button {...buttonProps} style={{ ...colorGroup, ...buttonProps?.style }}>
-      {children}
+    <button
+      {...buttonProps}
+      key={key}
+      style={{ ...colorGroup, ...buttonProps?.style }}
+      onClick={async (event) => {
+        {
+          if (buttonProps?.onClick) {
+            event.preventDefault();
+            setLoading(true);
+            await buttonProps?.onClick(event);
+            setLoading(false);
+          }
+        }
+      }}
+      disabled={loading}
+    >
+      {!loading ? children : "Loading..."}
     </button>
   );
 }
-

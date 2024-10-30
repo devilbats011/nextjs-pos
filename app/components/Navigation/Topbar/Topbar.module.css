@@ -1,0 +1,45 @@
+.topMenu {
+  display: flex;
+  flex-direction: row; /* Moves logo to the right */
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background-color: #191A2C;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 24px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.menuList {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menuItem {
+  margin-left: 20px;
+}
+
+.menuItem a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.menuItem a:hover {
+  background-color: #E2E0F9;
+  color: #191A2C;
+  border-radius: 4px;
+}

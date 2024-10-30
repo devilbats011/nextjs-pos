@@ -2,10 +2,19 @@
 import { create } from "zustand";
 import itemsUseStore from "./itemsUseStore";
 import categoryUseStore from "./categoryUseStore";
+import ordersUseStore from "./ordersUseStore";
 
 export default create((set: any, get: any) => ({
   ...itemsUseStore(set, get),
   ...categoryUseStore(set, get),
+  ...ordersUseStore(set, get),
+  sidebarIsOpen: false,
+  setSidebarIsOpen: (isOpen: boolean) => set((state: any) => ({ sidebarIsOpen: isOpen })),
+  toggleSidebar: ()=> {
+    const setSidebarIsOpen = get().setSidebarIsOpen;
+    setSidebarIsOpen(!get().sidebarIsOpen);
+    console.log('cxxsxsx!');
+  },
   orderItems: [],
   setOrderItems: (item: unknown) =>
     set((state: any) => {

@@ -1,5 +1,6 @@
 export interface errorMessageProps extends ErrorState {
     counter: number;
+
   }
   
   export interface ErrorState {

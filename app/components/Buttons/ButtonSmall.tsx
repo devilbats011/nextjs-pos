@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ButtonBase from "./ButtonBase";
-import { ButtonProps, variantProps } from "./ButtonInterface";
+import { ButtonSmallProps, variantProps } from "./ButtonInterface";
 
 export default function ButtonSmall({
   children,
   color = "primary",
+  customStylingPrimary,
+  customStylingWarning,
+  customStylingSecondary,
   buttonProps,
-}: ButtonProps) {
+}: ButtonSmallProps) {
 
   const variant: variantProps = {
     primary: {
@@ -14,18 +17,21 @@ export default function ButtonSmall({
       color: "#3F2F67",
       border: "1px solid #3F2F67",
       fontWeight: "bold",
+      ...customStylingPrimary,
     },
     secondary: {
       background: "white",
       color: "#3F2F67",
       border: "1px solid transparent",
       fontWeight: "bold",
+      ...customStylingSecondary,
     },
     warning: {
       background: "white",
       color: "#B00020",
       border: "1px solid transparent",
       fontWeight: "bold",
+      ...customStylingWarning,
     },
   };
 
@@ -39,7 +45,8 @@ export default function ButtonSmall({
         },
         ...buttonProps,
         className:
-          "w-max py-2 px-2.5 flex items-center justify-center text-base",
+          "w-max py-2 px-2.5 flex items-center justify-center text-base "+
+          buttonProps?.className,
       }}
     >
       {children}

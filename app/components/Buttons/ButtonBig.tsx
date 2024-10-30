@@ -7,6 +7,7 @@ export default function ButtonBig({
   color = "primary",
   icon,
   buttonProps,
+  key,
 }: ButtonBigProps) {
   const variant: variantProps = {
     primary: {
@@ -42,6 +43,7 @@ export default function ButtonBig({
         ...buttonProps,
         className,
       }}
+      key={key}
     >
       {icon ? (
         <div style={{ display: "flex", alignItems: "center", gap: '2rem' }}>

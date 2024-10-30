@@ -6,14 +6,10 @@ import { useEffect, useState } from "react";
 import Header1 from "../components/Headers/Header1";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Sidebar from "../components/Navigation/Sidebar/page";
+import Topbar from "../components/Navigation/Topbar/page";
 
-export default function Layout({
-  children,
-  modal,
-}: {
-  children: React.ReactNode;
-  modal: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const { clearOrderItems, getOrderItems } = useStore((state) => state);
@@ -39,60 +35,17 @@ export default function Layout({
         style={{
           display: "flex",
           gap: "10px",
-          margin: "1rem 0px",
+          margin: "2rem 0px",
         }}
       >
-        <section
-          style={{
-            border: "1px solid black",
-            padding: "16px",
-          }}
-        >
-          <Header1> TOP MENU </Header1>
-          <nav>
-            <a href="/user/order"> ORDER {getOrderItems().length}</a>
-            <br></br>
-            <button
-              style={{
-                border: "1px solid red",
-                padding: "0 6px",
-                margin: "6px 0px",
-              }}
-              onClick={clearOrderFunc}
-            >
-              Clear Orders
-            </button>
-          </nav>
-        </section>
-
-        <section
-          style={{
-            border: "1px solid black",
-            padding: "16px",
-          }}
-        >
-          <Header1> SIDEBAR </Header1>
-          <nav>
-            <ul style={{ color: "blue" }}>
-              <li>
-                <Link href="/user/sales">sales</Link>
-              </li>
-              <li>
-                <Link href="/user/items">items</Link>
-              </li>
-              <li>
-                <Link href="/user/orders">orders</Link>
-              </li>
-            </ul>
-          </nav>
-        </section>
+        <Topbar
+          clearOrderFunc={clearOrderFunc}
+        />
+        <Sidebar
+        />
       </section>
 
-      <hr />
-      <br />
-
       <section>{children}</section>
-      <section>{modal}</section>
     </section>
   );
 }

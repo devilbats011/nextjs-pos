@@ -4,7 +4,7 @@ import { ItemProps } from "./interface/item";
 interface itemsUseStoreProps {
   items: ItemProps[];
   getItems: () => Promise<any>;
-  fetchItems: () => Promise<void>;
+  fetchItems: () => Promise<any>;
   addItem: (item: ItemProps) => Promise<void>;
   editItem: (
     id: number | string,

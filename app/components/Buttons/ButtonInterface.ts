@@ -9,6 +9,13 @@ export interface ButtonProps {
   children?: React.ReactNode;
   color?: "primary" | "secondary" | "warning";
   buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  key?: any;
+}
+
+export interface ButtonSmallProps extends ButtonProps {
+  customStylingPrimary?: React.CSSProperties;
+  customStylingSecondary?: React.CSSProperties;
+  customStylingWarning?: React.CSSProperties;
 }
 
 export interface ButtonBigProps extends ButtonProps  {

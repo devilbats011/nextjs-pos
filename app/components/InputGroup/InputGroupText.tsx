@@ -17,7 +17,7 @@ export default function InputGroupText({
   return (
     <div
       style={{ display: "flex", flexDirection: "column", gap: ".8rem" }}
-      className="my-4"
+      className=""
     >
       <label
         {...labelProps}
@@ -29,7 +29,7 @@ export default function InputGroupText({
       </label>
       <input
         {...inputProps}
-        className="input w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="input w-full px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         type="text"
         style={{ background: "#EFEFEF" }}
         id={_id}
@@ -41,9 +41,13 @@ export default function InputGroupText({
 
 function ErrorText({
   message,
+  style,
   ...props
 }: {
   message?: errorMessageProps;
+  style?: React.CSSProperties;
+  
+
 }): JSX.Element | null {
   const [isShaking, setIsShaking] = useState(false);
 
@@ -87,6 +91,8 @@ function ErrorText({
           ...(isShaking && {
             animation: "shake 0.82s cubic-bezier(.36,.07,.19,.97) both",
           }),
+          ...style,
+
         }}
         onClick={handleShake}
         onAnimationEnd={handleAnimationEnd} // Reset animation when it ends

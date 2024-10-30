@@ -21,7 +21,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ crumbs = [], containerProps }) 
     <section
     {...containerProps}
     style={{ display: "flex", flexDirection: "row", gap: "6px", ...containerProps?.style }} >
-      <h3> Breadcrumbs :</h3>
+
       {crumbs.map((crumb: crumbProps, index) => {
         return (
           <a key={crumb.name} href={crumb.href}>

@@ -51,7 +51,7 @@ export default function Page() {
         }
         buttonProps={{
           onClick: () => {
-            router.push('/user/items_list');
+            router.push('/user/items/list');
           },
         }}
       >
