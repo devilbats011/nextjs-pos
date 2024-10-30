@@ -1,0 +1,1 @@
+export type pathNameProps = "user/sales" | "user/orders" | "user/categories" | "user/items";

@@ -13,7 +13,6 @@ export default create((set: any, get: any) => ({
   toggleSidebar: ()=> {
     const setSidebarIsOpen = get().setSidebarIsOpen;
     setSidebarIsOpen(!get().sidebarIsOpen);
-    console.log('cxxsxsx!');
   },
   orderItems: [],
   setOrderItems: (item: unknown) =>
@@ -32,7 +31,9 @@ export default create((set: any, get: any) => ({
   },
   clearOrderItems: () => {
     set({ orderItems: [] });
+    // set({ items: [] });
     sessionStorage.removeItem("orderItems");
+
   },
   deleteOrderItem: (item: any) => {
     set((state: any) => {

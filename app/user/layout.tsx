@@ -1,50 +1,29 @@
-"use client";
-
-import useStore from "@/hooks/zustand/useStore";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import Header1 from "../components/Headers/Header1";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Sidebar from "../components/Navigation/Sidebar/page";
 import Topbar from "../components/Navigation/Topbar/page";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-
-  const { clearOrderItems, getOrderItems } = useStore((state) => state);
-
-  async function clearOrderFunc() {
-    await clearOrderItems();
-    toast(
-      <div>
-        <span style={{ margin: "0 .1rem" }}> </span> 🔑{" "}
-        <span style={{ margin: "0 .2rem" }}> </span> Order Cleared
-      </div>,
-      {
-        position: "top-center",
-        duration: 1000,
-      }
-    );
-    router.push("/user/sales");
-  }
-
+export default async function Layout({
+  children,
+  // params,
+}: {
+  children: React.ReactNode;
+  // params: Promise<{ team: string }>;
+}) {
   return (
-    <section style={{ padding: "20px" }}>
+    <section style={{ padding: "1.4rem" }}>
       <section
         style={{
           display: "flex",
           gap: "10px",
-          margin: "2rem 0px",
+          margin: "2.2rem 0 2rem 0px",
         }}
       >
-        <Topbar
-          clearOrderFunc={clearOrderFunc}
-        />
-        <Sidebar
-        />
-      </section>
+        <Topbar />
+        <Sidebar />
+        {/* <pre style={{marginTop: "100px"}}>
 
+        {JSON.stringify({},null,2)} 
+        </pre> */}
+      </section>
       <section>{children}</section>
     </section>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import ItemsReadonly from "./ItemsReadonly/page";
+import ItemsReadonly from "../ItemsReadonly/page";
 
 interface SearchItemProps {
   items?: any[];
@@ -21,22 +21,24 @@ const SearchItem: React.FC<SearchItemProps> = ({
   itemOnClick = undefined,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-
   const filteredItems = items.filter((item: any) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div style={containerStyle}>
+    <div style={containerStyle} className="w-full my-4">
       <input
+        className="w-full border border-gray-300 px-2.5 py-3 focus:outline-none focus:border-indigo-500"
         style={inputSearchStyle}
         type="text"
-        placeholder="Search on name.."
+        placeholder="Search item on name.."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-
       <ItemsReadonly
+        listProps={{
+          style: listItemStyle,
+        }}
         items={filteredItems}
         listOnClick={(item: any, event: any) => itemOnClick(item, event)}
       />

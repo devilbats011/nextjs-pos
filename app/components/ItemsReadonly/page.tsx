@@ -1,12 +1,12 @@
 "use client";
 
+import Header1 from "../Headers/Header1";
 // import useStore from "@/hooks/zustand/useStore";
 import ItemName from "./ItemsReadonlyComponents/ItemName";
 import ItemPrice from "./ItemsReadonlyComponents/ItemPrice";
 import ItemRepresentative from "./ItemsReadonlyComponents/ItemRepresentative";
 
-export default  function ItemsReadonly({
-  item = [], //TODO MUST remove this later .. after remove - check if there any page error using this component..
+export default function ItemsReadonly({
   items = [],
   listProps,
   disablePrice,
@@ -23,18 +23,28 @@ export default  function ItemsReadonly({
   >;
   listOnClick?: any;
 }) {
+  function RenderNoItemsManager() {
+    if (!items || items.length == 0) {
+      return <li key={0} className="text-center p-8 text-gray-400 text-xl"> No Items.. </li>;
+    }
+    return null;
+  }
+
   return (
-    <div className="py-4">
+    <div className="mt-4 py-4 flex flex-col gap-4">
+      <Header1> Items </Header1>
       <ol className="flex flex-col gap-4">
-        { items.map((item: any, index: any) => {
+        {RenderNoItemsManager()}
+        {items.map((item: any, index: any) => {
           return (
             <li
-              key={index + item.name}
-              {...listProps}
               style={{
+                ...listProps?.style,
                 padding: "1.4rem 0",
               }}
-              className="flex flex-row justify-between items-center cursor-pointer w-full gap-4 border border-gray-400  hover:border-gray-600 hover:bg-gray-100 transition-colors"
+              key={index + item.name}
+              {...listProps}
+              className="p-4 flex flex-row justify-between items-center cursor-pointer w-full gap-4 border border-gray-400  hover:border-gray-600 hover:bg-gray-100 transition-colors"
               onClick={(event) => {
                 listOnClick && listOnClick(item, event);
               }}

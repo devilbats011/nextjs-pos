@@ -5,12 +5,14 @@
   justify-content: space-between;
   padding: 0 20px;
   background-color: #191A2C;
-  height: 60px;
+  height: 4rem;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 999;
+  color:#ffffff;
+  font-weight:500;
 }
 
 .logo {
@@ -42,4 +44,13 @@
   background-color: #E2E0F9;
   color: #191A2C;
   border-radius: 4px;
+}
+
+.smallDropdown {
+  width: 200px;
+  /* height: 100px; */
+  /* opacity: 0.9; */
+  top: 2.8rem;
+  right: 0;
+  color: #191A2C;
 }

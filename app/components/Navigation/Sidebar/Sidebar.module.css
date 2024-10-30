@@ -2,9 +2,10 @@
 .sidebar {
   position: fixed;
   top: 0;
-  right: -250px; /* Initially hidden */
+  right: -74%; /* Initially hidden */
   height: 100vh;
-  width: 250px;
+  width: 74%;
+  max-width: 400px;
   background-color: #191A2C;
   display: flex;
   flex-direction: column;
@@ -34,6 +35,11 @@
 
 /* Hover effect for buttons */
 .sidebarButton:hover {
+  background-color: #E2E0F9;
+  color: #191A2C;
+}
+
+.sideBarButtonActive  {
   background-color: #E2E0F9;
   color: #191A2C;
 }

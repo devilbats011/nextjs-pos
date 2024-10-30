@@ -1,9 +1,18 @@
-export default function Item() {
+export default function Item({
+  isButtonActive = false,
+}: {
+  isButtonActive?: boolean;
+}) {
+
+  function isBtnActiveManager(): string {
+    return isButtonActive ? "#191A2C" : "white";
+  }
+
   return (
     <>
       <style>
         {`
-     .c{fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;}
+     .c{fill:none;stroke:${isBtnActiveManager()};strokeLinecap:round;strokeLinejoin:round;}
         `}
       </style>
       <svg
@@ -12,13 +21,13 @@ export default function Item() {
         viewBox="0 0 48 48"
         id="b"
         xmlns="http://www.w3.org/2000/svg"
-        fill="#000000"
+        fill={isBtnActiveManager()}
       >
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
         <g
           id="SVGRepo_tracerCarrier"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         ></g>
         <g id="SVGRepo_iconCarrier">
           <defs></defs>
