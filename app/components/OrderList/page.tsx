@@ -33,7 +33,7 @@ const OrderList: React.FC<any> = ({
   const [order, setOrder] = useState<OrderProp | undefined>();
   const [isHideRefund, setIsHideRefund] = useState(true);
   const [isHideEmail, setIsHideEmail] = useState(true);
-  const { errors, setErrors } = useErrorHandler({ name: "" });
+  const { inputGroupError, setInputGroupError } = useErrorHandler();
   const [data, setData] = useState({
     email: "",
   });
@@ -149,7 +149,7 @@ const OrderList: React.FC<any> = ({
       >
         <div className="flex flex-col gap-6 justify-center items-center">
           <InputGroupText
-            errorMessage={errors}
+            errorMessage={inputGroupError}
             inputProps={{
               value: data.email,
               onChange: (e) => setData({ ...data, email: e.target.value }),
@@ -173,10 +173,7 @@ const OrderList: React.FC<any> = ({
                     errorMessage = "Name is required";
                   }
                   if (errorMessage) {
-                    setErrors({
-                      ...errors,
-                      name: errorMessage,
-                    });
+                    setInputGroupError(errorMessage);
                     return false;
                   }
                   return true;
@@ -184,10 +181,7 @@ const OrderList: React.FC<any> = ({
                 if(!validate()) return;
                 function clearDataAfterSend() {
                   setIsHideEmail(true);
-                  setErrors({
-                    ...errors,
-                    name: null,
-                  });
+                  setInputGroupError(null);
                   setData({ email: "" });
                 }
                 clearDataAfterSend();

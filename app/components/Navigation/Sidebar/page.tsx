@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Sales from "../../svg/Sales";
 import Order from "../../svg/Order";
 import Item from "../../svg/Item";
+import LogoPos from "../../svg/LogoPos";
 
 export default function Sidebar({ clearOrderFunc }: { clearOrderFunc?: any }) {
   const { toggleSidebar, sidebarIsOpen: isOpen } = useStore((state) => state);
@@ -20,42 +21,46 @@ export default function Sidebar({ clearOrderFunc }: { clearOrderFunc?: any }) {
           onClick={toggleSidebar}
           key={"0posLi"}
         >
-          POS
+          <div className="w-full">POS</div>
+          <div className="text-sm w-full flex justify-center items-center gap-2">
+            <span>
+            Wan Afnan Hariz
+            </span>
+            <LogoPos/>
+
+          </div>
         </li>
-        
+
         {[
           {
             name: "Sales",
             href: "/user/sales",
-            icon: <Sales/> 
+            icon: <Sales />,
           },
           {
             name: "Items",
             href: "/user/items",
-            icon: <Item/> 
+            icon: <Item />,
           },
           {
             name: "Orders",
             href: "/user/orders",
-            icon: <Order/> 
+            icon: <Order />,
           },
         ].map((item, index) => (
           <li
             key={index}
-            className={styles.sidebarButton + " flex justify-center items-center gap-4"} 
+            className={
+              styles.sidebarButton + " flex justify-center items-center gap-4"
+            }
             style={{ border: "1px solid 0" }}
             onClick={() => {
               router.push(item.href);
               toggleSidebar();
             }}
           >
-            <div className="mt-1">
-              {item.icon}
-            </div>
-            <div>
-            {item.name}
-
-            </div>
+            <div className="mt-1">{item.icon}</div>
+            <div>{item.name}</div>
           </li>
         ))}
         {/* <li className={styles.sidebarButton}>

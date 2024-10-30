@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { errorMessageProps, InputGroupTextProps } from "./interfaces";
+import { InputGroupErrorState, InputGroupTextProps } from "./interfaces";
 
 
 
@@ -44,7 +44,7 @@ function ErrorText({
   style,
   ...props
 }: {
-  message?: errorMessageProps;
+  message?: InputGroupErrorState;
   style?: React.CSSProperties;
   
 
@@ -66,7 +66,7 @@ function ErrorText({
   if (!message) {
     return null;
   }
-  if (!message.name) {
+  if (!message.message) {
     return null;
   }
 
@@ -98,7 +98,7 @@ function ErrorText({
         onAnimationEnd={handleAnimationEnd} // Reset animation when it ends
         {...props}
       >
-        {message.name}
+        {message.message}
       </div>
     </>
   );

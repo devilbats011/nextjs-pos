@@ -17,14 +17,7 @@ export default function Page() {
     name: "",
   });
 
-  const { errors, setErrors } = useErrorHandler({ name: "" });
-
-  function setErrorName(name: string) {
-    setErrors({
-      ...errors,
-      name,
-    });
-  }
+  const { inputGroupError , setInputGroupError } = useErrorHandler();
 
   const router = useRouter();
 
@@ -44,7 +37,7 @@ export default function Page() {
           onChange: (e) => setData({ ...data, name: e.target.value }),
         }}
         id="name"
-        errorMessage={errors}
+        errorMessage={inputGroupError}
       >
         Name
       </InputGroupText>
@@ -60,7 +53,7 @@ export default function Page() {
               if (!data.name) {
                 errorMessage = "Name is required";
               }
-              if (errorMessage) return setErrorName(errorMessage);
+              if (errorMessage) return setInputGroupError(errorMessage);
 
               const isAdded = await dataStore.addCategory(data);
               if (isAdded) {
