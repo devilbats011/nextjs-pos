@@ -12,7 +12,6 @@ export default function Page() {
 
   return (
     <>
-      <h1>Page Split Order</h1>
       <Breadcrumb
         crumbs={[
           { name: "Sales", href: "/user/sales" },

@@ -10,14 +10,13 @@ import Item from "../../svg/Item";
 import LogoPos from "../../svg/LogoPos";
 import { usePathname } from 'next/navigation'
 
-
 interface itemSidebarProps {
   name: string;
   href: string;
   icon: React.ReactElement;
 }
 
-export default function Sidebar({ clearOrderFunc }: { clearOrderFunc?: any }) {
+export default function Sidebar() {
   const { toggleSidebar, sidebarIsOpen: isOpen } = useStore((state) => state);
   const router = useRouter();
   const pathSegments = usePathname();

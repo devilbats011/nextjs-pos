@@ -3,10 +3,8 @@ import Topbar from "../components/Navigation/Topbar/page";
 
 export default async function Layout({
   children,
-  // params,
 }: {
   children: React.ReactNode;
-  // params: Promise<{ team: string }>;
 }) {
   return (
     <section style={{ padding: "1.4rem" }}>
@@ -19,10 +17,6 @@ export default async function Layout({
       >
         <Topbar />
         <Sidebar />
-        {/* <pre style={{marginTop: "100px"}}>
-
-        {JSON.stringify({},null,2)} 
-        </pre> */}
       </section>
       <section>{children}</section>
     </section>

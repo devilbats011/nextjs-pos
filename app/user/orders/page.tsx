@@ -108,7 +108,7 @@ function DateManagerElement({ order }: { order: OrderProp }) {
 function GetTotalPrice({ bills }: { bills: BillProp[] }): JSX.Element {
   let total: number = 0;
   bills.reduce((acc: string | number, { item, ...bills }) => {
-    total += parseFloat(item.price);
+    total +=  typeof item.price === "string" ? parseFloat(item.price) : item.price;
     return total;
   }, 0);
   return <div className="font-bold">{formatPrice(total)}</div>;

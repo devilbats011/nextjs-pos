@@ -7,10 +7,13 @@ import Header1 from "@/app/components/Headers/Header1";
 import SearchItem from "@/app/components/SearchItem/page";
 
 import ToasterMessage from "@/app/components/ToasterMessage";
+import { formatPrice } from "@/hooks/helper/helper";
+import { pathNameProps } from "@/hooks/helper/interface";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import { ItemProps } from "@/hooks/zustand/interface/item";
 import itemsUseStore from "@/hooks/zustand/itemsUseStore";
 import useStore from "@/hooks/zustand/useStore";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -19,9 +22,11 @@ export default function Page() {
     // getItems,
     fetchItems,
     getOrderItems,
+    getTotalOrderItemsPrice,
     items: useStoreItems,
   } = useStore((state) => state);
   const { toaster } = useSonnerToast();
+  const router = useRouter();
   // const [items, setItems] = useState<undefined | ItemProps[]>();
 
   function searchItemOnClick(item: any, event: any | undefined | null) {
@@ -53,10 +58,15 @@ export default function Page() {
         <Breadcrumb crumbs={[{ name: "Sales", href: "#" }]} />
         <hr />
 
-        <ButtonBig>
+        <ButtonBig
+        buttonProps={{onClick: () => {
+          const pathName: pathNameProps = "/user/sales/order";
+          router.push(pathName);
+        }}}
+        >
           <div className="flex flex-col text-base">
             <div>Charged</div>
-            <div>RM 0</div>
+            <div> {formatPrice(getTotalOrderItemsPrice())} </div>
           </div>
         </ButtonBig>
         {/* {items ? ( */}
