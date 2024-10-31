@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
+import Trash from "../../svg/Trash";
 
 const ItemDeleteButton: React.FC<any> = ({ ...rest }) => {
 
@@ -9,13 +10,13 @@ const ItemDeleteButton: React.FC<any> = ({ ...rest }) => {
 
   return (
     <button
-    style={{ border: "1px solid red", padding: "4px", margin: '0 1rem' }}
+    className="mr-4"
     onClick={() => {
       return null;
       //   rest.deleteOrderItem(item)
     }}
   >
-    Delete
+    <Trash />
   </button>
   );
 };

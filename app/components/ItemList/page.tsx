@@ -28,26 +28,32 @@ const ItemList: React.FC = ({ ...rest }: {
   // TODO  Add policy and logic - remove and add cannot be above the total items quantity
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }} >
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }} 
+    className="w-full"
+    >
         {/* {JSON.stringify(dataStore.groupedItemList())} */}
-        <ol style={{ display: "flex", flexDirection: "column", gap: "1rem", paddingTop: "1rem" }} >
+        <ol
+          className="flex flex-col justify-center items-center gap-1 w-full relative overflow-auto "
+        
+        >
           {dataStore.groupedItemList().map((item: any, index: any) => {
             return (
-              <li key={index}>
-                <ItemCheckboxInput disableCheckbox={rest.disableCheckbox} />
-                <ItemRemove disableAddRemoveButton={rest.disableAddRemoveButton} />
-                <ItemName name={item.name} />
-                <ItemAdd disableAddRemoveButton={rest.disableAddRemoveButton} />
-                <QuantityItem item={item} disableAddRemoveButton={rest.disableAddRemoveButton}  />
-                <ItemPrice price={item.price} />
+              // <li key={index}>
+              <li key={index} 
+               className="w-full flex flex-row justify-between items-center p-4 border-b gap-1"
+              >
                 <ItemDeleteButton disableDeleteButton={rest.disableDeleteButton}  />
+                <ItemCheckboxInput disableCheckbox={rest.disableCheckbox} />
+                <ItemName style={{width: "100px"}}  name={item.name} />
+                <ItemRemove disableAddRemoveButton={rest.disableAddRemoveButton} />
+                <QuantityItem item={item} disableAddRemoveButton={rest.disableAddRemoveButton}  />
+                <ItemAdd disableAddRemoveButton={rest.disableAddRemoveButton} />
+                <ItemPrice price={item.price} />
               </li>
             );
           })}
+            <TotalItems price={dataStore.getTotalOrderItemsPrice()} disableTotalItems={rest.disableTotalItems} />
         </ol>
-
-      <hr />
-      <TotalItems price={dataStore.getTotalOrderItemsPrice()} disableTotalItems={rest.disableTotalItems} />
     </div>
   );
 };

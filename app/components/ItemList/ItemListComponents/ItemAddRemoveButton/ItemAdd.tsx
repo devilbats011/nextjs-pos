@@ -7,8 +7,12 @@ const ItemAdd: React.FC<any> = ({ ...rest }) => {
     return null;
   }
 
-  return <div style={{ display: "inline-block", margin: "0 .4rem" }}>
-  <button style={{ cursor: "pointer" }}>+</button>
+  return <div style={{ display: "inline-block", margin: "0 .4rem" }}
+  className="border border-gray-300 px-2 rounded-md"
+  >
+  <button style={{ cursor: "pointer" }}
+  className=""
+  >+</button>
 </div>;
 };
 export default ItemAdd;

@@ -19,7 +19,7 @@ export default function Topbar() {
           ☰
         </div>
         
-        {pathName === "/user/sales" && <LeftDivSales />}
+        {(pathName === "/user/sales" || pathName === "/user/sales/order") && <LeftDivSales />}
       </div>
       <RightDivManager />
     </nav>

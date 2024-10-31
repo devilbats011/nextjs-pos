@@ -8,7 +8,7 @@ const ItemCheckboxInput: React.FC<any> = ({ ...rest }) => {
   }
 
   return (
-    <input type="checkbox" style={{ margin: "0 .4rem" }} />
+    <input type="checkbox" style={{ margin: "0 .4rem"  }} />
   );
 };
 export default ItemCheckboxInput;

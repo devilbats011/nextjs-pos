@@ -1,23 +1,47 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { formatPrice } from "@/hooks/helper/helper";
 import React from "react";
 
-const QuantityItem: React.FC<any> = ({ item,...rest }) => {
-  if(rest.disableAddRemoveButton) {
-    return <span style={{marginLeft: "1rem", marginRight: "1rem"}}> RM {item?.itemPrice} x{item?.quantity} </span>;
+const QuantityItem: React.FC<any> = ({ item, ...rest }) => {
+  if (rest.disableAddRemoveButton) {
+    return (
+      <div
+        style={{
+          display: "block",
+          width: "100%",
+          padding: "0rem 0.5rem",
+          position: "relative",
+          textAlign: "center",
+          minWidth: "200px",
+        }}
+        className=" font-light italic"
+      >
+        {formatPrice(item?.itemPrice)}
+
+          <span className="text-sm " style={{padding: "0 4px"}}>x</span>
+          <span className="text-lg">
+          {item?.quantity}
+
+          </span>
+      </div>
+    );
   }
 
   return (
     <div
       style={{
-        display: "inline-block",
-        margin: "0 .6rem",
+        display: "block",
+        width: "60px",
+        // minWidth: "60px",
         padding: "0rem 0.5rem",
         position: "relative",
-        border: "1px solid black",
         textAlign: "center",
       }}
+      className=" font-light italic"
     >
       {item.quantity}
+      {/* TODO: NEED TO FIX QUANTITY */}
+
       {/* <input
         type="text"
         placeholder="0"

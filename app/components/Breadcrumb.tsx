@@ -3,9 +3,8 @@
 import { pathNameProps } from "@/hooks/helper/interface";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import Slash from "./svg/slash";
-import Home from "./svg/home";
-import { link } from "fs";
+import Home from "./svg/Home";
+import Slash from "./svg/Slash";
 
 interface crumbPropsI {
   name: string;
@@ -45,6 +44,7 @@ const Breadcrumb: React.FC<BreadcrumbProps<crumbPropsI>> = ({
         newBreadcrumbs.push(LinkCrumb(crumb,  { className: "hover:underline cursor-pointer hover:font-light italic transition-all" } ));
         return; // Skips to the next iteration
       }
+      
       newBreadcrumbs.push(<Slash key={crumb.name+'__slash'} />);
       newBreadcrumbs.push(LinkCrumb(crumb, { className: "font-bold cursor-auto" }));
     });
@@ -81,7 +81,7 @@ const Breadcrumb: React.FC<BreadcrumbProps<crumbPropsI>> = ({
     <section
       {...containerProps}
       // style={{ display: "flex", flexDirection: "row", gap: "6px", ...containerProps?.style }}
-      className="flex  justify-start items-start flex-auto"
+      className="flex  justify-start items-start flex-wrap"
     >
       {breadcrumbs ? breadcrumbs.map((crumb) => crumb) : null}
     </section>

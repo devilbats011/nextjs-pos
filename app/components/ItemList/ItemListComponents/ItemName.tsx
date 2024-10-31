@@ -3,7 +3,7 @@ import React from "react";
 
 const ItemName: React.FC<any> = ({ ...rest }) => {
   return (
-    <span> {rest.name} </span>
+    <p className="w-full" style={{minWidth: "200px"}}> {rest.name} </p>
   );
 };
 export default ItemName;

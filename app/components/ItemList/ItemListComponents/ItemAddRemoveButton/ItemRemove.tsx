@@ -8,8 +8,11 @@ const ItemRemove: React.FC<any> = ({ ...rest }) => {
   }
 
   return (
-    <div style={{ display: "inline-block", margin: "0 .4rem" }}>
-      <button style={{ cursor: "pointer" }}>-</button>
+    <div style={{ display: "inline-block", margin: "0 .4rem" }}
+    className="border border-gray-300 px-2 rounded-md"
+    
+    >
+      <button style={{ cursor: "pointer",bottom: "6px" }} className="relative">_</button>
     </div>
   );
 };

@@ -10,7 +10,7 @@ export default function Page() {
   const router = useRouter();
 
   // TODO: ADD MINUS/REMOVE item from OrderItems
-  // TODO: CANTIKKAN user/sales/order interface...
+  // TODO: CANTIKKAN user/sales/order
 
   return (
     <>
@@ -48,7 +48,8 @@ export default function Page() {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         disableCheckbox
-        disableAddRemoveButton
+
+        // disableAddRemoveButton
       />
     </>
   );
