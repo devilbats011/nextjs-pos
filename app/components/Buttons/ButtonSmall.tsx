@@ -40,9 +40,6 @@ export default function ButtonSmall({
       color={color}
       variant={variant}
       buttonProps={{
-        onClick: (e) => {
-          console.log(e);
-        },
         ...buttonProps,
         className:
           "w-max py-2 px-2.5 flex items-center justify-center text-base "+

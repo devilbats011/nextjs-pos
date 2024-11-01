@@ -1,22 +1,11 @@
-import API_URL from "./constant";
-import { CategoryProps } from "./interface/category";
+import API_URL from "../helper/constant";
+import { CategoryProps, categoryUseStoreInterface } from "./interface/category";
 
-interface categoryUseStore {
-  category: CategoryProps[];
-  getCategory: () => Promise<any>;
-  addCategory: (item: CategoryProps) => Promise<Boolean>;
-  // fetchItems: () => Promise<void>;
-  // editItem: (
-  //   id: number | string,
-  //   updatedItem: Partial<ItemProps>
-  // ) => Promise<void>;
-  // deleteItem: (id: number | string) => Promise<void>;
-}
 
 export default function categoryUseStore(
   set: (fn: (state: any) => any) => void,
   get: any
-): categoryUseStore {
+): categoryUseStoreInterface {
   const baseUrl = API_URL + "/category";
 
   const useStore = {

@@ -32,21 +32,22 @@ const Breadcrumb: React.FC<BreadcrumbProps<crumbPropsI>> = ({
   function addingSlashOrHomeSVGToBreadcrumbs() {
     const newBreadcrumbs: crumbProps<React.ReactElement>[] = [];
     crumbs.forEach((crumb, index) => {
+
       if (index == 0) {
         newBreadcrumbs.push(
-          <div className="flex flex-row gap-1">
-            <Home key={index} /> {LinkCrumb(crumb, { className: "italic hover:underline cursor-pointer font-base  hover:font-light transition-all" })}
+          <div className="flex flex-row gap-1"  key={index}>
+            <Home /> {LinkCrumb(crumb, { className: "italic hover:underline cursor-pointer font-base  hover:font-light transition-all", key: crumb.name  })}
           </div>
         );
         return; // Skips to the next iteration
-      } else if (index !== newBreadcrumbs.length - 1) {
+      } else if (index !== crumbs.length - 1) {
         newBreadcrumbs.push(<Slash key={crumb.name+'__slash'} />);
-        newBreadcrumbs.push(LinkCrumb(crumb,  { className: "hover:underline cursor-pointer hover:font-light italic transition-all" } ));
+        newBreadcrumbs.push(LinkCrumb(crumb,  { className: "hover:underline cursor-pointer hover:font-light italic transition-all", key: crumb.name } ));
         return; // Skips to the next iteration
       }
-      
+
       newBreadcrumbs.push(<Slash key={crumb.name+'__slash'} />);
-      newBreadcrumbs.push(LinkCrumb(crumb, { className: "font-bold cursor-auto" }));
+      newBreadcrumbs.push(LinkCrumb(crumb, { className: "font-bold cursor-auto", key: crumb.name  }));
     });
 
     setBreadrumbs(newBreadcrumbs);
@@ -68,7 +69,6 @@ const Breadcrumb: React.FC<BreadcrumbProps<crumbPropsI>> = ({
         // className={linkProps?.style} 
       >
         {crumb.name}
-        <a></a>
       </Link>
     );
   }

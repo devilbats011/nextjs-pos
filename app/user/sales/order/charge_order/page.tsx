@@ -1,5 +1,6 @@
 "use client";
 
+import Breadcrumb from "@/app/components/Breadcrumb";
 // import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import Header1 from "@/app/components/Headers/Header1";
@@ -13,18 +14,22 @@ export default function Page() {
     const router = useRouter();
   return (
     <div>
-      {/* <Breadcrumb crumbs={[{ name: "Charge Order", href: "/#" }]} />
-      <br /> */}
+      <Breadcrumb crumbs={[
+        { name: "Home", href: "/user/sales/order" },
+        { name: "...", href: "#" },
+        { name: "Charge Order", href: "#" }
+
+        ]} /> 
       <section
         style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
       >
-        <ButtonBig buttonProps={{ onClick: () => {router.back()} }} color="secondary">
+        {/* <ButtonBig buttonProps={{ onClick: () => {router.back()} }} color="secondary">
           Back
         </ButtonBig>
         <ButtonBig buttonProps={{ onClick: () => {router.push('/user/examplee')} }} color="warning">
           Cancel
-        </ButtonBig>
-        <Header1> Order </Header1>
+        </ButtonBig> */}
+        {/* <Header1> Order </Header1> */}
         <ItemList
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore

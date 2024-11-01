@@ -23,8 +23,6 @@ const ItemListChargeOrder: React.FC = ({ ...rest }: {
   useEffect(() => {
   }, []);
 
-  //TODO:1. DEVELOP ChargeOrderItems and its others related object to  ChargeOrderItems
-  //TODO:2. REPLACE groupedItemList with ChargeOrderItems
 
   return (
     <>

@@ -5,12 +5,10 @@ import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import Header1 from "@/app/components/Headers/Header1";
 import ItemList from "@/app/components/ItemList/page";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Page() {
   const router = useRouter();
-
-  // TODO: ADD MINUS/REMOVE item from OrderItems
-  // TODO: CANTIKKAN user/sales/order
 
   return (
     <>
@@ -22,12 +20,17 @@ export default function Page() {
         ]}
       />
       <section
-        style={{ display: "flex", flexDirection: "column", gap: "1rem", padding:"1rem 0" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          padding: "1rem 0",
+        }}
       >
         <ButtonBig
           buttonProps={{
             onClick: () => {
-              router.push("/user/charge_order");
+              router.push("/user/sales/order/charge_order");
             },
           }}
         >
@@ -36,19 +39,18 @@ export default function Page() {
         <ButtonBig
           buttonProps={{
             onClick: () => {
-              router.push("/user/split_order");
+              router.push("/user/sales/order/split_order");
             },
           }}
         >
           SPLIT ORDER
         </ButtonBig>
       </section>
-      {/* <a href="/user/split_order">  Button </a> */}
+
       <ItemList
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         disableCheckbox
-
         // disableAddRemoveButton
       />
     </>

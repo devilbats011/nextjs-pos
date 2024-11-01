@@ -1,24 +1,11 @@
-import API_URL from "./constant";
-import { ItemProps } from "./interface/item";
-
-interface itemsUseStoreProps {
-  items: ItemProps[];
-  getItems: () => Promise<any>;
-  fetchItems: () => Promise<any>;
-  addItem: (item: ItemProps) => Promise<void>;
-  editItem: (
-    id: number | string,
-    updatedItem: Partial<ItemProps>
-  ) => Promise<void>;
-  deleteItem: (id: number | string) => Promise<void>;
-}
+import API_URL from "../helper/constant";
+import { ItemProps, itemsUseStoreProps } from "./interface/item";
 
 export default function itemsUseStore(
   set: (fn: (state: any) => any) => void,
   get: any
 ): itemsUseStoreProps {
   const baseUrl = API_URL + "/items";
-
   const useStore = {
     items: [],
     getItems: async () => {

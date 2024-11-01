@@ -1,10 +1,16 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatPrice } from "@/hooks/helper/helper";
-import React from "react";
+import React, { useState } from "react";
 
 const QuantityItem: React.FC<any> = ({ item, ...rest }) => {
   if (rest.disableAddRemoveButton) {
+
+
     return (
+
+
       <div
         style={{
           display: "block",
@@ -20,8 +26,7 @@ const QuantityItem: React.FC<any> = ({ item, ...rest }) => {
 
           <span className="text-sm " style={{padding: "0 4px"}}>x</span>
           <span className="text-lg">
-          {item?.quantity}
-
+          {item.quantity}
           </span>
       </div>
     );
