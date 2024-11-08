@@ -12,7 +12,13 @@ export default function useErrorHandler(initErrors: { [key: string]: any } = {})
     counter: 0,
   });
 
-  function setInputGroupError(message: InputGroupErrorState["message"]) {
+
+
+
+  /**
+   * @params message: InputGroupErrorState["message"]
+   */
+  function setInputGroupError(message: string) {
     setUseInputGroupError({
       ...inputGroupError,
       message,

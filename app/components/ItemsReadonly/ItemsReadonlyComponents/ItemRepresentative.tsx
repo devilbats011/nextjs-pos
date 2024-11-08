@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import ItemWrapper from "./ItemWrapper";
+import { ItemProps } from "@/hooks/zustand/interface/item";
 
-const ItemRepresentative: React.FC<any> = ({ ...rest }) => {
+const ItemRepresentative: React.FC<any> = ({ item,...rest }: {item: ItemProps}) => {
 
+  // @ts-ignore
   if(rest.disableRepresentative){
     return null;
   }
@@ -14,7 +16,7 @@ const ItemRepresentative: React.FC<any> = ({ ...rest }) => {
         style={{
           width: "36px",
           height: "36px",
-          backgroundColor: "#7A288A",
+          backgroundColor: item.representation ?? "black",
           display: "inline-block",
         }}
       ></div>

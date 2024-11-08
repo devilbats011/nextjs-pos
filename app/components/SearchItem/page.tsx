@@ -26,9 +26,9 @@ const SearchItem: React.FC<SearchItemProps> = ({
   );
 
   return (
-    <div style={containerStyle} className="w-full my-4">
+    <div style={containerStyle} className="w-full my-4 flex flex-col gap-4">
       <input
-        className="w-full border border-gray-300 px-2.5 py-3 focus:outline-none focus:border-indigo-500"
+        className="w-full border border-gray-300 p-3 focus:outline-none focus:border-indigo-500 mb-2"
         style={inputSearchStyle}
         type="text"
         placeholder="Search item on name.."

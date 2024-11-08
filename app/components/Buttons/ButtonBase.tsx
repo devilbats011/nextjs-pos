@@ -13,6 +13,7 @@ export default function ButtonBase({
   key,
 }: ButtonBaseProps) {
   const [colorGroup, setColorGroup] = useState(variant.primary);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     switch (color) {
@@ -29,8 +30,6 @@ export default function ButtonBase({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color]);
 
-  const [loading, setLoading] = useState(false);
-
   return (
     <button
       {...buttonProps}
@@ -46,7 +45,8 @@ export default function ButtonBase({
           }
         }
       }}
-      disabled={loading}
+
+      disabled={loading || buttonProps?.disabled}
     >
       {!loading ? children : "Loading..."}
     </button>

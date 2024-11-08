@@ -19,14 +19,14 @@ export interface ItemProps {
   status: string | null;
   updated_at: string;
   created_at: string;
-  representation: string | null|undefined;
+  representation: string | null |undefined;
 }
 export interface GroupItemProps {
   id: string;
   name: string;
   price: number;
-  quantity: number;
   itemPrice: number;
+  quantity: number;
 }
 
 export interface itemsUseStoreProps {
@@ -97,10 +97,10 @@ export interface OrdersStateInterface {
   getOrderItems: any;
   clearOrderItems: any;
   deleteOrderItem: any;
-  groupedItemList: any;
+  groupedItemList: () => GroupItemProps[];
   getTotalOrderItemsPrice: () => any;
   incrementOrderItemQuantity: any;
-  decrementOrderItemQuantity: any;
+  decrementOrderItemQuantity: (id: string)=> ItemProps[];
   depositSplitOrderToStorageById?: any;
   withdrawSplitOrderFromStorageById?: any;
 }

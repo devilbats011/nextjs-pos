@@ -24,13 +24,16 @@ export default async function Home() {
               rel="noopener noreferrer"
             >
               <Image
-                className="dark:invert"
+                className="dark:invert ml-3"
                 src="https://nextjs.org/icons/vercel.svg"
                 alt="Vercel logomark"
                 width={20}
                 height={20}
               />
+              <div className="py-3 mr-3 flex ">
               Login / Dashboard
+              </div>
+
             </a>
             {/* <a
             className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
@@ -56,14 +59,7 @@ export default async function Home() {
               </button>
             </form>
 
-            <a
-              className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-              href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Next.js Docs
-            </a>
+   
           </div>
         </main>
         <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">

@@ -4,8 +4,6 @@ import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import ButtonSmall from "@/app/components/Buttons/ButtonSmall";
 import Header1 from "@/app/components/Headers/Header1";
-
-import ItemList from "@/app/components/ItemList/page";
 import {
   formatPrice,
   getObjectFromArrayById,
@@ -15,7 +13,7 @@ import { GroupItemProps, ItemProps } from "@/hooks/zustand/interface/item";
 import {
   splitOrderItemsProps,
   SplitOrderProps,
-} from "@/hooks/zustand/interface/order";
+} from "@/hooks/zustand/interface/item";
 import useStore, { useStoreProps } from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -30,10 +28,9 @@ export default function Page() {
     dataStore.fetchItems();
     const tempGroupedItemList = dataStore.groupedItemList();
     setGroupedItemList(tempGroupedItemList);
-    console.log("tempGroupedItemList", tempGroupedItemList);
+
   }, [splitOrder]);
 
-  // }, [dataStore.orderItems]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -80,25 +77,32 @@ function TableStorage({ items }: { items: GroupItemProps[] }) {
       <table className="w-full text-sm text-left rtl:text-center rounded-md  ">
         <thead className="text-xs text-gray-700 uppercase bg-gray-100 ">
           <tr>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-3 py-3">
               Item Name
             </th>
             <th scope="col" className="px-6 py-3 text-center">
               Quantity
+            </th>
+            <th scope="col" className="px-3 py-3 text-center">
+              Price per item
             </th>
           </tr>
         </thead>
         <tbody>
           {items.map((item: GroupItemProps) => (
             <tr
+              key={item.id}
               className="bg-white border-b  font-bold cursor-auto"
               onClick={() => null}
             >
-              <th scope="row" className="px-6 py-4  whitespace-nowrap ">
+              <th scope="row" className="px-3 py-4 text-sm font-light whitespace-nowrap ">
                 {item.name}
               </th>
-              <td className="px-6 py-4 text-lg text-center ">
+              <td className="px-6 py-4 text-base text-center ">
                 {item.quantity}
+              </td>
+              <td className="px-6 py-4 text-sm font-light text-center ">
+                {formatPrice(item.itemPrice)}
               </td>
             </tr>
           ))}
@@ -315,7 +319,7 @@ function SplitOrderDiv({
       {SplitOrders.map((order: SplitOrderProps, index: number) => (
         <div key={index} className="p-4 border border-gray-300 m-2 ">
           <div className="flex gap-4 justify-center items-center flex-col">
-            {order.splitOrderItems.map((item) => (
+            {order.splitOrderItems.map((item: splitOrderItemsProps) => (
               <div className="flex gap-2 flex-row" key={item.id}>
                 <ButtonSmall
                   buttonProps={{

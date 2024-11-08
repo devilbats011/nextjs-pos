@@ -1,15 +1,5 @@
-'use client'
+import SalesPage from "@/app/components/Sales/SalesPage";
 
-import { useState } from "react";
-
-export default function Page({
-    children,
-}: {
-    children: React.ReactNode,
-}) {
-
-    return (
-        <div>
-        </div>
-    )
+export default function Page() {
+  return <SalesPage/>
 }

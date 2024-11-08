@@ -1,16 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CategoryProps {
   id?: any;
-  name?: any;
+  name?: string;
+  created_at?: any;
+  updated_at?: any;
+  status?: any;
+
 }
 
 export interface categoryUseStoreInterface {
   category: CategoryProps[];
   getCategory: () => Promise<any>;
-  addCategory: (item: CategoryProps) => Promise<Boolean>;
+  addCategory: (item: CategoryProps) => Promise<boolean>;
+  getCategoryById: (id: string) => Promise<CategoryProps | null>;
   // fetchItems: () => Promise<void>;
-  // editItem: (
-  //   id: number | string,
-  //   updatedItem: Partial<ItemProps>
-  // ) => Promise<void>;
-  // deleteItem: (id: number | string) => Promise<void>;
+  editCategoryById: (
+    id: string,
+    updatedCategory: Partial<CategoryProps>
+  ) => Promise<any>;
+  deleteCategoryById: (id: string) => Promise<boolean>;
 }

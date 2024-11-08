@@ -10,7 +10,7 @@ import ItemName from "./ItemListComponents/ItemName";
 import ItemPrice from "./ItemListComponents/ItemPrice";
 import TotalItems from "./ItemListComponents/TotalItems";
 import QuantityItem from "./ItemListComponents/QuantityItem";
-import { ItemProps } from "@/hooks/zustand/interface/item";
+import { GroupItemProps, ItemProps } from "@/hooks/zustand/interface/item";
 
 const ItemList: React.FC = ({
   ...rest
@@ -19,21 +19,18 @@ const ItemList: React.FC = ({
   disableAddRemoveButton?: boolean;
   disableDeleteButton?: boolean;
   disableTotalItems?: boolean;
-  items?: ItemProps[];
+  items?: GroupItemProps[];
 }) => {
   const { ...dataStore } = useStore((state) => state);
-  const [_items, set_items] = useState<ItemProps[]>([]);
+  const [_items, set_items] = useState<GroupItemProps[]>([]);
 
   useEffect(() => {
     if (!rest.items) {
       set_items(dataStore.groupedItemList());
-    }
-    else {
+    } else {
       set_items(rest.items);
     }
   }, []);
-
-  // TODO  Add policy and logic - remove and add cannot be above the total items quantity
 
   return (
     <div
@@ -42,35 +39,44 @@ const ItemList: React.FC = ({
     >
       {/* {JSON.stringify(dataStore.groupedItemList())} */}
       <ol className="flex flex-col justify-center items-center gap-1 w-full relative overflow-auto ">
-        {_items.map((item: ItemProps, index: number) => {
-          return (
-            <li
-              key={index}
-              className="w-full flex flex-row justify-between items-center p-4 border-b gap-1"
-            >
-              <ItemDeleteButton
-                disableDeleteButton={rest.disableDeleteButton}
-              />
-              {/* <ItemCheckboxInput disableCheckbox={rest.disableCheckbox} /> */}
-              <ItemName style={{ width: "100px" }} name={item.name} />
-              <ItemRemove
-                disableAddRemoveButton={rest.disableAddRemoveButton}
-                item={item}
-              />
-              <QuantityItem
-                item={item}
-                disableAddRemoveButton={rest.disableAddRemoveButton}
-              />
+        {_items
+          .slice() // Create a shallow copy to avoid mutating the original array
+          .sort(
+            (a: GroupItemProps, b: GroupItemProps) =>
+              a.name.localeCompare(b.name) // Sort by name alphabetically
+          )
+          .map((item: GroupItemProps, index: number) => {
+            return (
+              <li
+                key={index}
+                className="w-full flex flex-row justify-between items-center p-4 border-b gap-1"
+              >
+                <ItemDeleteButton
+                  disableDeleteButton={rest.disableDeleteButton}
+                />
+                {/* <ItemCheckboxInput disableCheckbox={rest.disableCheckbox} /> */}
+                <ItemName style={{ width: "100px" }} name={item.name} />
+                <ItemRemove
+                  disableAddRemoveButton={rest.disableAddRemoveButton}
+                  item={item}
+                  set_items={set_items}
+                />
+                <QuantityItem
+                  item={item}
+                  set_items={set_items}
+                  disableAddRemoveButton={rest.disableAddRemoveButton}
+                />
 
-              <ItemAdd
-                disableAddRemoveButton={rest.disableAddRemoveButton}
-                item={item}
-              />
+                <ItemAdd
+                  disableAddRemoveButton={rest.disableAddRemoveButton}
+                  item={item}
+                  set_items={set_items}
+                />
 
-              <ItemPrice price={item.price} />
-            </li>
-          );
-        })}
+                <ItemPrice price={item.price} />
+              </li>
+            );
+          })}
         <TotalItems
           price={dataStore.getTotalOrderItemsPrice()}
           disableTotalItems={rest.disableTotalItems}

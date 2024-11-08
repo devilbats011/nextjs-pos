@@ -1,11 +1,10 @@
-import API_URL from "../helper/constant";
-import { OrdersStateInterface, OrderProp } from "./interface/item";
+import { baseUrlOrders as baseUrl } from "../helper/constant";
+import { OrdersStateInterface, OrderProp, ItemProps } from "./interface/item";
 
 export default function ordersUseStore(
   set: any,
   get: any
 ): OrdersStateInterface {
-  const baseUrl = API_URL + "/orders";
 
   const useStore = {
     orders: [],
@@ -102,17 +101,18 @@ export default function ordersUseStore(
     },
     incrementOrderItemQuantity: (itemId: string) =>
       set((state: any) => {
-        // const _arr = state.getOrderItems() as any[];
-        const _arr = [...state.getOrderItems()] as any[]; // Copy the array to avoid mutating state directly
-        _arr.push(_arr.find((item: any) => item.id === itemId));
-        sessionStorage.setItem("orderItems", JSON.stringify(_arr));
-        return { orderItems: _arr };
+        // Safeguard against undefined/null orderItems by providing a default empty array
+        const orderItems = [...state.getOrderItems()] ;
+
+        orderItems.push(orderItems.find((item: any) => item.id === itemId));
+        sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
+        return { orderItems: orderItems };
       }),
-    decrementOrderItemQuantity: (itemId: string) =>
+    decrementOrderItemQuantity: (itemId: string) : ItemProps[] => {
+      let orderItems: ItemProps[] = [];
       set((state: any) => {
         // Safeguard against undefined/null orderItems by providing a default empty array
-
-        const orderItems = [...(state.getOrderItems() || [])];
+        orderItems = [...(state.getOrderItems() || [])];
 
         if (orderItems && orderItems.length === 1) {
           return { orderItems };
@@ -133,7 +133,9 @@ export default function ordersUseStore(
 
         sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
         return { orderItems };
-      }),
+      })
+      return orderItems;
+    },
     getTotalOrderItemsPrice: () => {
       const arr = get().getOrderItems();
       let total = 0;

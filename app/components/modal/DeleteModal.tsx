@@ -1,8 +1,7 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
 import Modal from "./Modal";
 import { DeleteModalProps } from "./interface";
 import ButtonSmall from "../Buttons/ButtonSmall";
-import Header1 from "../Headers/Header1";
 
 export default function DeleteModal({
   deleteButtonOnClick: deleteOnClick,
@@ -19,7 +18,7 @@ export default function DeleteModal({
       {...props}
     >
       <div className="flex flex-col gap-4 justify-center items-center">
-        <h3 className="font-bold">Are you sure?</h3>
+        <h3 className="mb-3 font-bold">Are you sure?</h3>
         <ButtonSmall
           buttonProps={{
             onClick: deleteOnClick,

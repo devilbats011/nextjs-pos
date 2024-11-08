@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
 import styles from "./Sidebar.module.css"; // Import the CSS Module
@@ -8,12 +8,15 @@ import Sales from "../../svg/Sales";
 import Order from "../../svg/Order";
 import Item from "../../svg/Item";
 import LogoPos from "../../svg/LogoPos";
-import { usePathname } from 'next/navigation'
+import { usePathname } from "next/navigation";
+import { deleteCookie } from "cookies-next";
+import { auth_token_name } from "@/hooks/helper/constant";
 
 interface itemSidebarProps {
-  name: string;
-  href: string;
-  icon: React.ReactElement;
+  name: string | React.ReactElement;
+  href?: string;
+  onClick?: any;
+  icon?: React.ReactElement;
 }
 
 export default function Sidebar() {
@@ -35,7 +38,7 @@ export default function Sidebar() {
     item: itemSidebarProps
   ): React.ReactElement {
     const isButtonActive = pathSegments == item.href ? true : false;
-    return React.cloneElement(item.icon, { isButtonActive });
+    return React.cloneElement(item.icon as React.ReactElement, { isButtonActive });
   }
 
   return (
@@ -69,17 +72,31 @@ export default function Sidebar() {
             href: "/user/orders",
             icon: <Order />,
           },
+          {
+            name: <i>Logout</i>,
+            onClick: () => {
+              deleteCookie(auth_token_name);
+              router.push('/login');
+            }
+          },
         ].map((item, index) => (
           <li
             key={index}
             className={sideBarButtonActiveManager(item)}
             style={{ border: "1px solid 0" }}
             onClick={() => {
-              router.push(item.href);
+              if(item.href) {
+                router.push(item.href);
+              }
+              else if(item.onClick) {
+                item.onClick();
+              }
               toggleSidebar();
             }}
           >
-            <div className="mt-1">{sidebarButtonIconActiveManager(item)}</div>
+            {item.icon && (
+              <div className="mt-1">{sidebarButtonIconActiveManager(item)}</div>
+            )}
             <div>{item.name}</div>
           </li>
         ))}

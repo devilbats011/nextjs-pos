@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
+import Header1 from "@/app/components/Headers/Header1";
 import ItemsReadonly from "@/app/components/ItemsReadonly/page";
 import ToasterMessage from "@/app/components/ToasterMessage";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
@@ -9,25 +11,23 @@ import useStore from "@/hooks/zustand/useStore";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-
 export default function Page() {
   const { ...dataStore } = useStore((state) => state);
   const router = useRouter();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const { toaster } = useSonnerToast();
   const [category, setCategory] = useState([]);
 
   useEffect(() => {
-    dataStore.getCategory().then((data: any) => setCategory(data));
-    const toast = searchParams.get('toast');
-    if(toast) {
-      toaster(<ToasterMessage> {toast} </ToasterMessage>)
+    dataStore.getCategory().then((data) => setCategory(data));
+    const toast = searchParams.get("toast");
+    if (toast) {
+      toaster(<ToasterMessage> {toast} </ToasterMessage>);
     }
-
-  }, ['']);
+  }, [""]);
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <Breadcrumb
         containerProps={{ className: "my-4" }}
         crumbs={[
@@ -47,16 +47,20 @@ export default function Page() {
           + Add Category
         </ButtonBig>
 
+        <Header1> Category </Header1>
         <ItemsReadonly
           items={category}
           disablePrice
           disableRepresentative
-          listOnClick={(item: { id: any }, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+          listOnClick={async (
+            item: { id: string },
+            event: React.MouseEvent<HTMLLIElement, MouseEvent>
+          ) => {
             event.preventDefault();
-            router.push(`/user/category/edit/${item.id}`);
+            return router.push(`/user/category/edit/${item.id}`);
           }}
         />
       </div>
-    </>
+    </div>
   );
 }

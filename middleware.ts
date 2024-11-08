@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { auth_token_name } from "./hooks/helper/constant";
 
 function startWith(request: NextRequest, url: string) {
   return request.nextUrl.pathname.startsWith(url);
 }
 
 async function checkSignIn(request: NextRequest) {
-  // request.cookies.set("sidebar", '1');
-  if (!request.cookies.has("session")) {
+  if (!request.cookies.has(auth_token_name)) {
     return false;
   }
-  console.log(request.cookies.get("session"), "session!");
+  console.log(request.cookies.get(auth_token_name), "auth_token!");
 
   return true;
 }

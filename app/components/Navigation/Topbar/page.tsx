@@ -4,13 +4,27 @@ import styles from "@/app/components/Topbar/Topbar.module.css";
 import useStore from "@/hooks/zustand/useStore";
 import { useEffect, useState } from "react";
 import RightDivSales from "../../Topbar/RightDivSales";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import LeftDivSales from "../../Topbar/LeftDivSales";
 import { pathNameProps } from "@/hooks/helper/interface";
+import { useSonnerToast } from "@/hooks/useSonnerToast";
+import ToasterMessage from "../../ToasterMessage";
 
 export default function Topbar() {
   const { toggleSidebar } = useStore((state) => state);
   const pathName = usePathname() as pathNameProps;
+  const searchParms = useSearchParams();
+  const { toaster } = useSonnerToast();
+
+  console.log(searchParms);
+
+  useEffect(() => {
+    if (searchParms && searchParms.get("message")) {
+      toaster(<ToasterMessage> {searchParms.get("message")} </ToasterMessage>);
+    }
+
+    return () => {};
+  }, [searchParms]);
 
   return (
     <nav className={styles.topMenu}>
@@ -18,8 +32,10 @@ export default function Topbar() {
         <div className={styles.logo} onClick={toggleSidebar}>
           ☰
         </div>
-        
-        {(pathName === "/user/sales" || pathName === "/user/sales/order") && <LeftDivSales />}
+
+        {(pathName === "/user/sales" || pathName === "/user/sales/order") && (
+          <LeftDivSales />
+        )}
       </div>
       <RightDivManager />
     </nav>
