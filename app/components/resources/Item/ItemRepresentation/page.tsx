@@ -2,8 +2,22 @@ import { useEffect, useState } from "react";
 import InputSelectColor from "./InputSelectColor";
 import InputSelectImage from "./InputSelectImage";
 
-export default function ItemRepresentaion() {
+export default function ItemRepresentation({ defaultColor = "red",
+  setSelectedColor = () => {},
+  selectedColor = 'black'
+ }: { defaultColor?: string | undefined | null ;
+
+  selectedColor?: string | null;
+  setSelectedColor?: (color: string)=> void;
+
+ }) {
   const [radioValue, setRadioValue] = useState<string | number>("1");
+
+  useEffect(() => {
+    if(defaultColor) {
+      setSelectedColor(defaultColor);
+    }
+  }, [defaultColor]);
 
   function onChangeRadio(event: React.ChangeEvent<HTMLInputElement>) {
     console.log(event.target.value);
@@ -11,16 +25,15 @@ export default function ItemRepresentaion() {
   }
 
   return (
-    <div className="flex flex-col justify-start items-start gap-4">
+    <div className="flex flex-col justify-start items-start gap-4 py-8">
       <h3
-        className="font-bold text-base md:text-xl"
+        className="font-bold text-lg"
         style={{ color: "#3F2F67" }}
       >
         Representation on Item
       </h3>
 
       <section className="flex gap-4">
-
         <input
           type="radio"
           name="a"
@@ -33,10 +46,13 @@ export default function ItemRepresentaion() {
           Color
         </label>
       </section>
-      {radioValue == 1 && <InputSelectColor />}
-
+      {radioValue == 1 && (
+        <InputSelectColor
+          selectedColor={selectedColor}
+          setSelectedColor={setSelectedColor}
+        />
+      )}
       <section className="flex gap-4">
-
         <input
           type="radio"
           name="a"

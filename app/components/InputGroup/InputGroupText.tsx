@@ -17,20 +17,20 @@ export default function InputGroupText({
   return (
     <div
       style={{ display: "flex", flexDirection: "column", gap: ".8rem" }}
-      className=""
+      className="pt-1 pb-5 w-full"
     >
       <label
         {...labelProps}
         htmlFor={_id}
-        className="font-bold text-base md:text-xl "
+        className="font-bold text-base md:text-xl m-0 p-0"
         style={{ color: "#3F2F67" }}
       >
         {children}
       </label>
       <input
         {...inputProps}
-        className="input w-full px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        type="text"
+        className="input w-full px-2 py-2 borderfocus:outline-none focus:ring-2 focus:ring-indigo-500"
+        type={inputProps?.type || "text"}
         style={{ background: "#EFEFEF" }}
         id={_id}
       />

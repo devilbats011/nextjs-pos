@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import API_URL from "../helper/constant";
+import { fetchWithAuth } from "../helper/helper";
 import { ItemProps, itemsUseStoreProps } from "./interface/item";
 
 export default function itemsUseStore(
@@ -10,7 +13,7 @@ export default function itemsUseStore(
     items: [],
     getItems: async () => {
       try {
-        const response = await fetch(baseUrl);
+        const response = await fetchWithAuth(baseUrl);
         const data = await response.json();
         return data;
       } catch (error) {
@@ -21,7 +24,7 @@ export default function itemsUseStore(
     },
     fetchItems: async () => {
       try {
-        const response = await fetch(baseUrl);
+        const response = await fetchWithAuth(baseUrl);
         const data = await response.json();
         set((state: any) => {
           return { items: data };
@@ -36,7 +39,7 @@ export default function itemsUseStore(
     // Add new item (Create)
     addItem: async (newItem: ItemProps) => {
       try {
-        const response = await fetch(baseUrl, {
+        const response = await fetchWithAuth(baseUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -47,10 +50,13 @@ export default function itemsUseStore(
         if (response.ok) {
           const addedItem = await response.json();
           set((state: any) => ({
-             items: [...state.items, addedItem],
+            items: [...state.items, addedItem],
           }));
+          return true;
         }
+        return false;
       } catch (error) {
+        return false;
         console.error("Error adding item:", error);
       }
     },
@@ -58,7 +64,7 @@ export default function itemsUseStore(
     // Update existing item (Update)
     editItem: async (id: number | string, updatedItem: Partial<ItemProps>) => {
       try {
-        const response = await fetch(`${baseUrl}/${id}`, {
+        const response = await fetchWithAuth(`${baseUrl}/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -73,16 +79,19 @@ export default function itemsUseStore(
               item.id === id ? { ...item, ...updated } : item
             ),
           }));
+          return true;
         }
+        return false;
       } catch (error) {
         console.error("Error updating item:", error);
+        return false;
       }
     },
 
     // Delete an item (Delete)
-    deleteItem: async (id: number | string) => {
+    deleteItemById: async (id: number | string) => {
       try {
-        const response = await fetch(`${baseUrl}/${id}`, {
+        const response = await fetchWithAuth(`${baseUrl}/${id}`, {
           method: "DELETE",
         });
 
@@ -90,9 +99,25 @@ export default function itemsUseStore(
           set((state: any) => ({
             items: state.items.filter((item: ItemProps) => item.id !== id),
           }));
+          return true;
         }
+        return false;
       } catch (error) {
         console.error("Error deleting item:", error);
+        return false;
+      }
+    },
+    getItemById: async (id: string) => {
+      try {
+        const response = await fetchWithAuth(baseUrl + `/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          return data;
+        }
+        return null;
+      } catch (error) {
+        console.error("Error fetching items:", error);
+        return null;
       }
     },
   };

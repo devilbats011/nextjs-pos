@@ -27,7 +27,6 @@ export default function SalesPage() {
   } = useStore((state) => state);
   const { toaster } = useSonnerToast();
   const router = useRouter();
-  // const [items, setItems] = useState<undefined | ItemProps[]>();
 
   function searchItemOnClick(item: any, event: any | undefined | null) {
     toaster(<ToasterMessage> Item Added </ToasterMessage>);
@@ -38,9 +37,6 @@ export default function SalesPage() {
 
   useEffect(() => {
     (async () => {
-      // await getItems().then((data: ItemProps[]) => {
-      //   setItems(data);
-      // });
       await fetchItems();
     })();
   }, []);

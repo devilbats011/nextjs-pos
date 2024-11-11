@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // export interface ItemProps {
 //   id?: any;
 //   name?: any;
@@ -11,15 +12,16 @@
 // }
 
 export interface ItemProps {
-  id: string;
+  id?: string;
   name: string;
-  price: number;
+  price: number | string;
   quantity: number;
-  id_category: string;
-  status: string | null;
-  updated_at: string;
-  created_at: string;
-  representation: string | null |undefined;
+  category_id?: string;
+  status?: string | null;
+  updated_at?: string;
+  created_at?: string;
+  representation_color?: string | null | undefined;
+  representation_image?: string | null | undefined;
 }
 export interface GroupItemProps {
   id: string;
@@ -33,12 +35,13 @@ export interface itemsUseStoreProps {
   items: ItemProps[];
   getItems: () => Promise<any>;
   fetchItems: () => Promise<any>;
-  addItem: (item: ItemProps) => Promise<void>;
+  addItem: (item: ItemProps) => Promise<boolean>;
   editItem: (
     id: number | string,
     updatedItem: Partial<ItemProps>
-  ) => Promise<void>;
-  deleteItem: (id: number | string) => Promise<void>;
+  ) => Promise<boolean>;
+  deleteItemById: (id: number | string) => Promise<boolean>;
+  getItemById: (id: string) => Promise<ItemProps | null>;
 }
 
 export type OrderStatus =
@@ -52,9 +55,11 @@ export interface BillProp {
   id: string;
   item_id: string;
   order_id: string;
+  item_quantity: number;
   status: string;
   created_at: string;
   updated_at: string;
+  refund_id: string | null;
   item: ItemProps;
 }
 
@@ -91,7 +96,7 @@ export type SplitOrders = SplitOrderProps[];
 export interface OrdersStateInterface {
   orders: OrderProp[]; // Assuming `OrderProp` is an array of order items
   getOrders: () => Promise<OrderProp[]>; // Returns a promise with an array of orders
-  fetchOrder: (orderId?: string) => Promise<OrderProp | undefined>; // Returns a promise with a single order or undefined
+  getOrderById: (id: string) => Promise<OrderProp | undefined>; // Returns a promise with a single order or undefined
   orderItems: any[];
   setOrderItems: any;
   getOrderItems: any;

@@ -1,7 +1,9 @@
 // app/components/Dropdown/page.tsx
-import React, { useState } from "react";
+import { getObjectFromArrayById } from "@/hooks/helper/helper";
+import React, { useEffect, useState } from "react";
 
 interface DropdownItem {
+  id?: string;
   label: string;
   onClick: () => void;
 }
@@ -13,15 +15,21 @@ interface DropdownProps {
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
+  defaultValue?: string;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   items,
   label,
   containerProps,
+  defaultValue = "",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(defaultValue);
+
+  useEffect(() => {
+    setName(defaultValue);
+  }, [defaultValue]);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -41,14 +49,14 @@ const Dropdown: React.FC<DropdownProps> = ({
         {label}
       </h3>
       <button
-        className="w-full mt-4 p-2 flex justify-between items-center border-2 focus:border-indigo-500 "
+        className="w-full mt-4 px-1 py-1 flex justify-between items-center border-2 focus:border-indigo-500 "
         style={{ textAlign: "end", background: "#EFEFEF" }}
+        type="button"
         onClick={handleToggle}
-      ><div className="w-8/12 text-left">
-        {name}
-      </div>
+      >
+        <div className="w-8/12 text-left pl-1">{name}</div>
         <svg
-          className="mr-4"
+          className="mr-2"
           xmlns="http://www.w3.org/2000/svg"
           width="30px"
           height="30px"
@@ -62,24 +70,27 @@ const Dropdown: React.FC<DropdownProps> = ({
             fill="#000000"
           />
         </svg>
-
-    
       </button>
       {isOpen && (
         <ul className="absolute bg-white shadow-md mt-1 w-full border ">
           {items.map((item, index) => (
             <li
               key={index}
-              className="p-2 cursor-pointer hover:border-gray-100 hover:bg-gray-100"
+              className="p-3 cursor-pointer hover:border-gray-100 hover:bg-gray-100"
               style={{ color: "#3F2F67" }}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 handleItemClick(item);
                 if (item.label !== "+ Add Category") {
                   setName(item.label);
                 }
               }}
             >
-              {item.label !== "+ Add Category" ? item.label : <b>{item.label}</b>}
+              {item.label !== "+ Add Category" ? (
+                item.label
+              ) : (
+                <b>{item.label}</b>
+              )}
             </li>
           ))}
         </ul>

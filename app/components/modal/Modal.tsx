@@ -34,11 +34,13 @@ export default function Modal({
 
   return (
     <div style={{ padding: '0 1rem',...styles.modalOverlay}}>
+
+
       <div
         style={{
+          ...modalWrapper,
           width: "60%",
           height: "400px",
-          ...modalWrapper,
         }}
       >
         <div style={styles.modal}>
@@ -72,7 +74,7 @@ export default function Modal({
               {headerModalTitle}
             </h1>
           </div>
-          <div>{children}</div>
+          <div className="w-full px-2.5" >{children}</div>
         </div>
       </div>
     </div>

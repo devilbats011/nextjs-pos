@@ -165,6 +165,10 @@ export async function fetchWithAuth(
     method: "GET" | "POST" | "PUT" | "DELETE";
     headers?: any;
     body?: any;
+  } = {
+    method: "GET",
+    headers: {},
+    body: null,
   }
 ) {
   // Get the token from cookies
@@ -173,14 +177,13 @@ export async function fetchWithAuth(
   // Set up headers if not already provided
   options.headers = {
     ...options.headers,
+    Accept: "*/*",
     Authorization: token ? `Bearer ${token}` : "",
     "Content-Type": "application/json",
   };
 
-  // Call the fetch API
   const response = await fetch(url, options);
 
-  // Handle response (optional)
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }

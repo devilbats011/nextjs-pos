@@ -1,36 +1,64 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
+import ButtonSmall from "@/app/components/Buttons/ButtonSmall";
 import Dropdown from "@/app/components/Dropdown/page";
+import useErrorHandler from "@/app/components/InputGroup/hooks/useErrorHandler";
 import InputGroupText from "@/app/components/InputGroup/InputGroupText";
-import Modal from "@/app/components/modal/Modal";
-import ItemRepresentaion from "@/app/components/resources/Item/ItemRepresentaion/page";
+import DeleteModal from "@/app/components/modal/DeleteModal";
+import SmallModal from "@/app/components/modal/SmallModal";
+import ItemRepresentation from "@/app/components/resources/Item/ItemRepresentation/page";
+import ToasterMessage from "@/app/components/ToasterMessage";
+import { getObjectFromArrayById } from "@/hooks/helper/helper";
+import useItem from "@/hooks/item/useItem";
+import { useSonnerToast } from "@/hooks/useSonnerToast";
+import { CategoryProps } from "@/hooks/zustand/interface/category";
+import { ItemProps } from "@/hooks/zustand/interface/item";
 import useStore from "@/hooks/zustand/useStore";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const { ...dataStore } = useStore((state) => state);
+  const {
+    isHideModalCategory,
+    setIsHideModalCategory,
+    useEffectCount,
+    setUseEffectCount,
+    categories,
+    setCategories,
+    newCategory,
+    setNewCategory,
+    category,
+    setCategory,
+    item,
+    setItem,
+    selectedColor,
+    setSelectedColor,
+  } = useItem();
+  const { toaster } = useSonnerToast();
+  const router = useRouter();
 
-  // const [items, setItems] = useState([]);
+  const {
+    inputGroupError: categoryError,
+    setInputGroupError: setCategoryError,
+  } = useErrorHandler();
 
-  const [isHideModalCategory, setIsHideModalCategory] = useState(true);
+  const [modelDeleteIsHide, setDeleteModelIsHide] = useState(true);
+  const [isEditLoading, setIsEditLoading ] = useState(false);
 
-  const [categories, setCategories] = useState([]);
+  const { id } = useParams();
 
   useEffect(() => {
-    // dataStore.getItems().then((data: any) => setItems(data));
-    dataStore.getCategory().then((data: any) => {
-      console.log(data);
-      setCategories(
-        data.map((category: any) => {
-          return { label: category.name, onClick: ()=> console.log(category.id,'cc-id') };
-        })
-      )
-    }
-    );
-
-  }, []);
+    (async () => {
+      if (typeof id != "string") return;
+      const _item = await dataStore.getItemById(id);
+      setItem(_item);
+      setCategory(categories.find((cat) => cat.id == _item?.category_id));
+    })();
+  }, [categories]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -41,63 +69,191 @@ export default function Page() {
           { name: "Edit Item", href: "#" },
         ]}
       />
-      <InputGroupText>Name</InputGroupText>
-      <Dropdown
-        label="Category"
-        items={[
-          ...categories,
-          {
-    
-            label: "+ Add Category",
-            onClick: () => {
-              setIsHideModalCategory(false);
-            },
-          },
-        ]}
-      />
-      <InputGroupText>Price</InputGroupText>
-      <ItemRepresentaion />
+      <form
+        className="space-y-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!category)
+            return <ToasterMessage>Missing Category</ToasterMessage>;
+          if (!item) return <ToasterMessage>Missing Item</ToasterMessage>;
 
-      <div className="flex flex-col gap-4">
-        {/* Edit Item Button */}
+          (async () => {
+            if (!item.id) return <ToasterMessage>Missing Item</ToasterMessage>;
+            if (!item.name || item.name == undefined) {
+              return toaster(
+                <ToasterMessage>Missing Item Name</ToasterMessage>
+              );
+            }
+            if (!item.price) {
+              return toaster(
+                <ToasterMessage>Missing Item Price</ToasterMessage>
+              );
+            }
+            setIsEditLoading(true);
+            const isEdited = await dataStore.editItem(item.id, {
+              name: item.name,
+              price: item.price,
+              quantity: 1,
+              category_id: category.id,
+              representation_color: item.representation_color ?? "black",
+              representation_image: item.representation_image ?? null,
+            });
+            if (!isEdited) {
+              return toaster(<ToasterMessage>Something Wrong</ToasterMessage>);
+            }
+
+            toaster(<ToasterMessage>Item Edited</ToasterMessage>);
+            setTimeout(() => {
+              router.push("/user/items/list");
+            }, 600);
+          })();
+        }}
+      >
+        <InputGroupText
+          inputProps={{
+            required: true,
+            placeholder: "Item Name",
+            defaultValue: item ? item.name ?? "" : "",
+            onChange: (e) => setItem({ ...item, name: e.target.value }),
+          }}
+        >
+          Name
+        </InputGroupText>
+
+        <InputGroupText
+          inputProps={{
+            required: true,
+            defaultValue: item ? item.price ?? "" : "",
+            type: "number",
+            placeholder: "Item Price (RM)",
+            onChange: (e) => setItem({ ...item, price: e.target.value }),
+          }}
+        >
+          Price
+        </InputGroupText>
+
+        {/* CATEGORY */}
+        {category && item && (
+          <Dropdown
+            label="Category"
+            defaultValue={category ? category.name : undefined}
+            items={[
+              {
+                label: "+ Add Category",
+                onClick: () => {
+                  setIsHideModalCategory(false);
+                },
+              },
+              ...categories.map((cat) => {
+                return {
+                  id: cat.id,
+                  label: cat.name ?? "no name",
+                  onClick: () => setCategory(cat),
+                };
+              }),
+            ]}
+          />
+        )}
+        <ItemRepresentation
+          defaultColor={item?.representation_color}
+          selectedColor={selectedColor}
+          setSelectedColor={setSelectedColor}
+        />
         <ButtonBig
-          color="secondary"
           buttonProps={{
-            onClick: async () => {
-              await dataStore.editItem(1, {
-                name: "Updated Shawarma",
-              });
-            },
+            disabled: isEditLoading,
+            type: "submit",
           }}
         >
           Edit Item
         </ButtonBig>
+      </form>
 
-        {/* Delete Item Button */}
-        <ButtonBig
-          color="warning"
-          buttonProps={{
-            onClick: async () => {
-              await dataStore.deleteItem(2);
-            },
-          }}
-        >
-          Delete Item
-        </ButtonBig>
-      </div>
-      <Modal
+      <ButtonBig
+        color="warning"
+        buttonProps={{
+          type: "button",
+          onClick: (e) => {
+            e.preventDefault();
+            setDeleteModelIsHide(false);
+          },
+        }}
+      >
+        Delete Item
+      </ButtonBig>
+
+      <DeleteModal
+        useStateHide={{
+          hide: modelDeleteIsHide,
+          setHide: setDeleteModelIsHide,
+        }}
+        deleteButtonOnClick={async () => {
+          (async () => {
+            setDeleteModelIsHide(true);
+            const isDelete = await dataStore.deleteItemById(
+              typeof id == "string" ? id : ""
+            );
+            if (!isDelete) {
+              toaster(<ToasterMessage> Something Wrong .. </ToasterMessage>);
+              return;
+            }
+            toaster(<ToasterMessage> Item Deleted! </ToasterMessage>);
+            setTimeout(() => {
+              router.push("/user/items/list");
+            }, 600);
+          })();
+        }}
+        headerModalTitle="Delete Item"
+      />
+
+      <SmallModal
         useStateHide={{
           setHide: setIsHideModalCategory,
           hide: isHideModalCategory,
         }}
-        headerModalTitle="Add Category"
-        modalWrapper={{
-          width: "300px",
-          height: "200px",
-        }}
       >
-     <InputGroupText>Category</InputGroupText>
-      </Modal>
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!newCategory)
+              return <ToasterMessage>Missing Category</ToasterMessage>;
+            if (!newCategory.name)
+              return setCategoryError("Category name is required");
+            (async () => {
+              const isAdded = await dataStore.addCategory(newCategory);
+              if (!isAdded) {
+                return toaster(
+                  <ToasterMessage>Something Wrong</ToasterMessage>
+                );
+              }
+              setUseEffectCount(useEffectCount + 1);
+              toaster(<ToasterMessage>Category Added</ToasterMessage>);
+              setIsHideModalCategory(true);
+            })();
+          }}
+        >
+          <InputGroupText
+            errorMessage={categoryError}
+            inputProps={{
+              required: true,
+              placeholder: "Category Name",
+              onChange: (e) => {
+                setNewCategory({ name: e.target.value });
+              },
+            }}
+          >
+            Name
+          </InputGroupText>
+          <ButtonBig
+            buttonProps={{
+              style: { padding: ".5rem 0", fontSize: "1rem" },
+            }}
+          >
+            + Add Category
+          </ButtonBig>
+        </form>
+      </SmallModal>
     </div>
   );
 }

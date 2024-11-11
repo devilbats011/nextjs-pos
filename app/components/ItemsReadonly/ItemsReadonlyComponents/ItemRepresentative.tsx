@@ -16,7 +16,7 @@ const ItemRepresentative: React.FC<any> = ({ item,...rest }: {item: ItemProps}) 
         style={{
           width: "36px",
           height: "36px",
-          backgroundColor: item.representation ?? "black",
+          backgroundColor: item.representation_color ?? "black",
           display: "inline-block",
         }}
       ></div>

@@ -17,9 +17,6 @@ export default function ButtonBig({
       fontWeight: "bold",
     },
     secondary: {
-      background: "white",
-      color: "#3F2F67",
-      border: "1px solid #3F2F67",
       fontWeight: "bold",
     },
     warning: {
@@ -37,6 +34,7 @@ export default function ButtonBig({
         setClassName(standardClass + " " + style.bigButtonPrimary);
         break;
       case "secondary":
+        setClassName(standardClass + " " + style.bigButtonSecondary);
         break;
       case "warning":
         setClassName(standardClass + " " + style.bigButtonWarning);
@@ -57,7 +55,7 @@ export default function ButtonBig({
       variant={variant}
       buttonProps={{
         ...buttonProps,
-        className,
+        className: className+ " " + buttonProps?.className,
       }}
       key={key}
     >

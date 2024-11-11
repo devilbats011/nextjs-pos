@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseUrlCategory as baseUrl } from "../helper/constant";
+import { fetchWithAuth } from "../helper/helper";
 import { CategoryProps, categoryUseStoreInterface } from "./interface/category";
 
 export default function categoryUseStore(
@@ -11,7 +12,7 @@ export default function categoryUseStore(
     category: [],
     getCategory: async () => {
       try {
-        const response = await fetch(baseUrl);
+        const response = await fetchWithAuth(baseUrl);
         const data = await response.json();
         return data;
       } catch (error) {
@@ -63,7 +64,7 @@ export default function categoryUseStore(
     },
     addCategory: async (newCategory: CategoryProps) => {
       try {
-        const response = await fetch(baseUrl, {
+        const response = await fetchWithAuth(baseUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

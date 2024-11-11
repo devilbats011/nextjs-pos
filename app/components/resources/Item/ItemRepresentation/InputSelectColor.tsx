@@ -1,8 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
     import React, { useState } from 'react';
 
-    export default function InputSelectColor() {
-      const colors = ['red', 'green', 'orange', 'blue', 'purple', 'yellow', 'pink', 'brown'];
-      const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    export default function InputSelectColor({
+      setSelectedColor,
+      selectedColor
+    } : {
+      setSelectedColor: any,
+      selectedColor: any
+    }
+    ) {
+      const colors = ['red', 'green', 'orange', 'blue', 'purple', 'yellow', 'pink', 'brown', 'black'];
+
     
       const handleColorChange = (color: string) => {
         setSelectedColor(color);
@@ -25,9 +34,9 @@
                   style={{
                     width: '55px',
                     height: '55px',
-                    // borderRadius: '50%',
+                    borderRadius: '2px',
                     backgroundColor: color,
-                    border: selectedColor !== color ? '1px solid #dddd' : '3px solid #3F2F67',
+                    border: selectedColor !== color ? '1px solid #dddd' : '3px dashed #dedede',
                     cursor: 'pointer',
                   }}
                 />

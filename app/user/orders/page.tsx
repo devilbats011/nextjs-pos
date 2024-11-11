@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
-import Header1 from "@/app/components/Headers/Header1";
 import { formatPrice } from "@/hooks/helper/helper";
-import { ItemProps } from "@/hooks/zustand/interface/item";
-import { BillProp, OrderProp } from "@/hooks/zustand/interface/order";
+import { BillProp, OrderProp } from "@/hooks/zustand/interface/item";
+
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,18 +25,26 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Header1>Orders</Header1>
+      <Breadcrumb
+        crumbs={[
+          {
+            name: "Orders",
+            href: "#",
+          },
+        ]}
+      />
       {orders.map((order) => (
-        <div className="w-full relative" key={order.id}>
+        <div className="w-full relative " key={order.id}>
           <ButtonBig color="secondary"
           buttonProps={{
+            // disabled: true,
             onClick: () => {
               router.push(`/user/orders/order_detail/${order.id}`);
             },
           }}
           >
             <div
-              className="flex w-full justify-between items-center font-normal gap-2"
+              className="flex w-full justify-between items-center  font-normal gap-2 "
               style={{ fontSize: "14px" }}
             >
               <StatusOrderManagerElement order={order} />
@@ -67,7 +76,7 @@ function StatusOrderManagerElement({ order }: { order: OrderProp }) {
   }, [order.status]);
 
   return (
-    <div className="font-bold flex flex-col justify-center items-center ">
+    <div className="font-bold text-base md:text-lg flex flex-col justify-center items-center ">
       <div>#{order.short_id}</div>
       {!statusName || (
         <div className="" style={{ color }}>
@@ -108,8 +117,8 @@ function DateManagerElement({ order }: { order: OrderProp }) {
 function GetTotalPrice({ bills }: { bills: BillProp[] }): JSX.Element {
   let total: number = 0;
   bills.reduce((acc: string | number, { item, ...bills }) => {
-    total +=  typeof item.price === "string" ? parseFloat(item.price) : item.price;
+    total +=  (typeof item.price === "string" ? parseFloat(item.price) : item.price ) * bills.item_quantity;
     return total;
   }, 0);
-  return <div className="font-bold">{formatPrice(total)}</div>;
+  return <div className="font-bold text-sm md:text-lg">{formatPrice(total)} </div>;
 }

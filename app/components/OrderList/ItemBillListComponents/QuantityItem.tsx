@@ -1,9 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { BillProp } from "@/hooks/zustand/interface/item";
 import React from "react";
 
-const QuantityItem: React.FC<any> = ({ item,...rest }) => {
-  if(rest.disableAddRemoveButton) {
-    return <span style={{marginLeft: "1rem", marginRight: "1rem"}}> RM {item?.itemPrice} x{item?.quantity} </span>;
+const QuantityItem: React.FC<any> = ({
+  disableAddRemoveButton = false,
+  bill,
+}: {
+  disableAddRemoveButton?: boolean;
+  bill: BillProp;
+}) => {
+
+  if (disableAddRemoveButton) {
+    if (bill.item) {
+      return (
+        <div
+          className="w-full"
+          style={{ marginLeft: "1rem", marginRight: "1rem" }}
+        >
+          {" "}
+          RM {bill.item?.price} x{bill.item_quantity}{" "}
+        </div>
+      );
+    }
+    return null;
   }
 
   return (
@@ -17,7 +36,10 @@ const QuantityItem: React.FC<any> = ({ item,...rest }) => {
         textAlign: "center",
       }}
     >
-      {item.quantity}
+      {/* {bill.item_quantity} */}
+
+      {bill.item.quantity}
+
       {/* <input
         type="text"
         placeholder="0"

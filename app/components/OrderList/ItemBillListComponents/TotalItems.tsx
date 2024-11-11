@@ -7,7 +7,7 @@ const TotalItems: React.FC<any> = ({ price, ...props }) => {
   }
 
   return (
-    <div className="font-bold flex justify-between items-center">
+    <div className="font-bold flex justify-end gap-4 items-center">
       <div>Total</div>
 
       <div>{formatPrice(price)}</div>

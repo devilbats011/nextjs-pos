@@ -2,7 +2,7 @@
 
 import styles from "@/app/components/Topbar/Topbar.module.css";
 import useStore from "@/hooks/zustand/useStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import RightDivSales from "../../Topbar/RightDivSales";
 import { usePathname, useSearchParams } from "next/navigation";
 import LeftDivSales from "../../Topbar/LeftDivSales";
@@ -16,13 +16,10 @@ export default function Topbar() {
   const searchParms = useSearchParams();
   const { toaster } = useSonnerToast();
 
-  console.log(searchParms);
-
   useEffect(() => {
     if (searchParms && searchParms.get("message")) {
       toaster(<ToasterMessage> {searchParms.get("message")} </ToasterMessage>);
     }
-
     return () => {};
   }, [searchParms]);
 

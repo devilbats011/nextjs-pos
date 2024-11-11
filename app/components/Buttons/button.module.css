@@ -32,3 +32,21 @@ button.bigButtonWarning:disabled {
     border: 1px solid transparent;
     cursor: not-allowed;
 }
+
+.bigButtonSecondary {
+    background: white;
+    color: #3F2F67;
+    border: 1px solid #3F2F67;
+}
+
+.bigButtonSecondary:hover {
+    transition: background 0.3s ease;
+    background: #EFEFEF;
+}
+
+button.bigButtonSecondary:disabled {
+    background: rgb(211, 211, 211);
+    opacity: 0.5;
+    border: 1px solid transparent;
+    cursor: not-allowed;
+}

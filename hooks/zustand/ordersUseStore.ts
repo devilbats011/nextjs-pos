@@ -1,16 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseUrlOrders as baseUrl } from "../helper/constant";
+import { fetchWithAuth } from "../helper/helper";
 import { OrdersStateInterface, OrderProp, ItemProps } from "./interface/item";
 
 export default function ordersUseStore(
   set: any,
   get: any
 ): OrdersStateInterface {
-
   const useStore = {
     orders: [],
     getOrders: async () => {
       try {
-        const response = await fetch(baseUrl);
+        const response = await fetchWithAuth(baseUrl);
         const data = await response.json();
         return data;
       } catch (error) {
@@ -18,24 +19,20 @@ export default function ordersUseStore(
         return [];
       }
     },
-    fetchOrder: async (orderId?: string): Promise<OrderProp | undefined> => {
+    getOrderById: async (id: string): Promise<OrderProp | undefined> => {
       try {
-        if (!orderId) {
+        if (!id) {
           throw new Error("No order ID provided");
         }
-        const response = await fetch(`${baseUrl}/${orderId}`);
-
-        // Check if the response is OK (status code 200-299)
+        const response = await fetchWithAuth(`${baseUrl}/${id}`);
         if (!response.ok) {
           throw new Error(`Error fetching order: ${response.statusText}`);
         }
-
         const data = await response.json();
-
-        console.log("Order Data:", data);
         return data; // Return the fetched data for further use
       } catch (error) {
         console.error("Fetch error:", error);
+        return undefined;
       }
     },
     orderItems: [],
@@ -102,13 +99,13 @@ export default function ordersUseStore(
     incrementOrderItemQuantity: (itemId: string) =>
       set((state: any) => {
         // Safeguard against undefined/null orderItems by providing a default empty array
-        const orderItems = [...state.getOrderItems()] ;
+        const orderItems = [...state.getOrderItems()];
 
         orderItems.push(orderItems.find((item: any) => item.id === itemId));
         sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
         return { orderItems: orderItems };
       }),
-    decrementOrderItemQuantity: (itemId: string) : ItemProps[] => {
+    decrementOrderItemQuantity: (itemId: string): ItemProps[] => {
       let orderItems: ItemProps[] = [];
       set((state: any) => {
         // Safeguard against undefined/null orderItems by providing a default empty array
@@ -133,7 +130,7 @@ export default function ordersUseStore(
 
         sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
         return { orderItems };
-      })
+      });
       return orderItems;
     },
     getTotalOrderItemsPrice: () => {
@@ -141,7 +138,7 @@ export default function ordersUseStore(
       let total = 0;
       if (arr) {
         total = arr.reduce(
-          (total: any, item: any) => total + item.price * item.quantity,
+          (total: any, item: any) => total + parseFloat(item.price) * item.quantity,
           0
         );
         //decimal 2 point

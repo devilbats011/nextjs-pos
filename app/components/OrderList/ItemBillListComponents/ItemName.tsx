@@ -3,7 +3,7 @@ import React from "react";
 
 const ItemName: React.FC<any> = ({ ...rest }) => {
   return (
-    <span> {rest.name} </span>
+    <div className="w-full"> {rest.name} </div>
   );
 };
 export default ItemName;
