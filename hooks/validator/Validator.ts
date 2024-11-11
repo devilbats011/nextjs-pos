@@ -32,7 +32,7 @@ export default class Validator<T> {
       this.value == null || this.value == undefined || this.value == ""
         ? true
         : false;
-    this.ruleManager(unu, { message: "value required.", isValid: false });
+    this.ruleManager(unu, { message: "Value required.", isValid: false });
     return this;
   }
 
@@ -83,6 +83,38 @@ export default class Validator<T> {
     return this;
   }
 
+  max(max: number) {
+    const value = this.value;
+    if (typeof value === 'number') {
+      this.ruleManager(value > max, {
+        message: `Value must be less than or equal to ${max}.`,
+        isValid: false,
+      });
+    } else {
+      this.ruleManager(true, {
+        message: `Value must be a number.`,
+        isValid: false,
+      });
+    }
+    return this;
+  }
+
+  min(min: number) {
+    const value = this.value;
+    if (typeof value === 'number') {
+      this.ruleManager(value < min, {
+        message: `Value must be greater than or equal to ${min}.`,
+        isValid: false,
+      });
+    } else {
+      this.ruleManager(true, {
+        message: `Value must be a number.`,
+        isValid: false,
+      });
+    }
+    return this;
+  }
+  
   validateGetErrors(): validateMessagesI[] {
     const _rules = this.rules.filter((rule) => !rule.isValid);
     this.rules = [];

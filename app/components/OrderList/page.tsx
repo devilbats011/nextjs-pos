@@ -17,6 +17,8 @@ import InputGroupText from "../InputGroup/InputGroupText";
 import ToasterMessage from "../ToasterMessage";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useErrorHandler from "../InputGroup/hooks/useErrorHandler";
+import Validator from "@/hooks/validator/Validator";
+import { isArrayNotEmpty } from "@/hooks/helper/helper";
 
 const OrderList: React.FC<any> = ({
   ...rest
@@ -35,6 +37,7 @@ const OrderList: React.FC<any> = ({
   const [data, setData] = useState({
     email: "",
   });
+  const [quantity, setQuantity] = useState(0);
   const [bill, setBill] = useState<BillProp>();
 
   const { toaster } = useSonnerToast();
@@ -48,11 +51,42 @@ const OrderList: React.FC<any> = ({
     })();
   }, []);
 
+  function sortedBills() {
+    if (!order) {
+      return [];
+    }
+    const _sortedBills = order.bills.sort((a, b) => {
+      const statusPriority = {
+        paid: 1,
+        mix: 2,
+      };
+      type Status = "paid" | "mix";
+      const aPriority =
+        statusPriority[a.status as Status] ||
+        Object.values(statusPriority).reduce(
+          (max, val) => Math.max(max, val),
+          0
+        ) + 1;
+      const bPriority =
+        statusPriority[b.status as Status] ||
+        Object.values(statusPriority).reduce(
+          (max, val) => Math.max(max, val),
+          0
+        ) + 1;
+      return aPriority - bPriority;
+    });
+    return _sortedBills;
+  }
+
+  if( !order || order?.bills.length === 0) {
+    return <div className="opacity-80"> ... </div>
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <ol className="flex overflow-auto flex-col pt-4 gap-4">
         {order &&
-          order.bills.map((_bill: BillProp, index: any) => {
+          sortedBills().map((_bill: BillProp, index: any) => {
             const { item } = _bill;
             return (
               <li key={index} className="flex flex-col gap-4 border-b py-4">
@@ -63,13 +97,21 @@ const OrderList: React.FC<any> = ({
                   <ItemDeleteButton disableDeleteButton={true} />
                   <BillStatus bill={_bill} />
                 </div>
-                <ButtonsModels setIsHideRefund={setIsHideRefund} bill={_bill} useStateBill={{ setBill , bill}} />
+                <ButtonsModels
+                  quantity={quantity}
+                  setQuantity={setQuantity}
+                  setIsHideRefund={setIsHideRefund}
+                  bill={_bill}
+                  useStateBill={{ setBill, bill }}
+                />
               </li>
             );
           })}
       </ol>
       <TotalPrice order={order} />
       <Models
+        setQuantity={setQuantity}
+        quantity={quantity}
         bill={bill}
         setIsHideRefund={setIsHideRefund}
         isHideRefund={isHideRefund}
@@ -116,31 +158,44 @@ function TotalPrice({ order }: { order: OrderProp | undefined }) {
     <div className="my-4 text-lg">
       {order ? (
         <TotalItems price={getTotalPriceFromBills(order.bills)} />
-      ) : (
-        "Total 0.00"
-      )}
+      ) : null}
     </div>
   );
 }
 
-function ButtonsModels({ setIsHideRefund, bill, useStateBill }: any) {
+function ButtonsModels({
+  setIsHideRefund,
+  bill,
+  useStateBill,
+  quantity,
+  setQuantity,
+}: {
+  setIsHideRefund: any;
+  bill: BillProp;
+  useStateBill: any;
+  quantity: any;
+  setQuantity: any;
+}) {
   return (
     <div className="flex justify-end w-full gap-4 mt-4 mb-6">
-      <ButtonSmall
-        color="warning"
-        customStylingWarning={{
-          border: "1px solid #B00020",
-          borderRadius: "2px",
-        }}
-        buttonProps={{
-          onClick: () => {
-            useStateBill.setBill(bill);
-            setIsHideRefund(false);
-          },
-        }}
-      >
-        Refund
-      </ButtonSmall>
+      {(bill.status == "paid" || bill.status == "mix") && (
+        <ButtonSmall
+          color="warning"
+          customStylingWarning={{
+            border: "1px solid #B00020",
+            borderRadius: "2px",
+          }}
+          buttonProps={{
+            onClick: () => {
+              setQuantity(bill.item_quantity);
+              useStateBill.setBill(bill);
+              setIsHideRefund(false);
+            },
+          }}
+        >
+          Refund
+        </ButtonSmall>
+      )}
       {/* <ButtonSmall
       buttonProps={{
       onClick: () => {
@@ -164,8 +219,13 @@ function Models({
   data,
   setData,
   setInputGroupError,
-  bill
+  quantity,
+  setQuantity,
+
+  bill,
 }: {
+  quantity: any;
+  setQuantity: any;
   setIsHideRefund: any;
   isHideRefund: any;
   setIsHideEmail: any;
@@ -175,47 +235,75 @@ function Models({
   data: any;
   setData: any;
   setInputGroupError: any;
-  bill? : BillProp
+  bill?: BillProp;
 }) {
+  const {
+    inputGroupError: quantityError,
+    setInputGroupError: setQuantityError,
+  } = useErrorHandler();
+
+  function _setIsHideRefund(value: boolean) {
+    setIsHideRefund(value);
+    setQuantityError("");
+  }
 
   return (
     <>
       <SmallModal
-        useStateHide={{ setHide: setIsHideRefund, hide: isHideRefund }}
-        headerModalTitle={bill ? bill.item.name : ''}
+        useStateHide={{ setHide: _setIsHideRefund, hide: isHideRefund }}
+        headerModalTitle={bill ? bill.item.name : ""}
         headerModalProps={{
-          className: 'mt-4 px-3',
+          className: "mt-4 px-3",
           style: {
-            textAlign: 'start',
-            fontSize: '18px',
-            fontWeight: '500',
-          }
-
+            textAlign: "start",
+            fontSize: "18px",
+            fontWeight: "500",
+          },
         }}
         modalWrapper={{
-          minHeight: "310px",
+          minHeight: "320px",
         }}
       >
         <div className="mt-2.5 flex flex-col gap-6 justify-center items-center w-full">
           <InputGroupText
+            errorMessage={quantityError}
             inputProps={{
+              onChange: (e) => setQuantity(parseInt(e.target.value)),
               placeholder: "Enter Quantity",
               type: "number",
               defaultValue: bill ? bill.item_quantity : 0,
               max: bill ? bill.item_quantity : 1,
-              min: 0,
+              min: 1,
             }}
           >
             Quantity
           </InputGroupText>
         </div>
-        <div className="flex flex-col gap-6 justify-start ">
+        <div className="flex flex-col gap-6 justify-start mt-2">
           <ButtonSmall
             color="warning"
             customStylingWarning={{ border: "1px solid #B00020" }}
             buttonProps={{
               onClick: () => {
+
+                const validateGetErrors = new Validator()
+                  .input(quantity)
+                  .required()
+                  .number()
+                  .max(bill ? bill.item_quantity : 0)
+                  .min(1)
+                  .validateGetErrors();
+
+                if (
+                  isArrayNotEmpty(validateGetErrors) &&
+                  validateGetErrors[0].isValid === false
+                ) {
+                  setQuantityError(validateGetErrors[0].message);
+                  return;
+                }
                 setIsHideRefund(true);
+                setQuantityError('');
+                setQuantity(0);
                 toaster(<ToasterMessage> Refunded! </ToasterMessage>);
               },
             }}

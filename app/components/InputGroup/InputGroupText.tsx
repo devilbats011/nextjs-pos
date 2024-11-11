@@ -83,6 +83,7 @@ function ErrorText({
         `}
       </style>
       <div
+      className="text-sm"
         style={{
           color: "red",
           transform: "translate3d(0, 0, 0)",
