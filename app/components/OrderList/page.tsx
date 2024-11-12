@@ -247,6 +247,8 @@ function Models({
     setQuantityError("");
   }
 
+  const { ...dataStore } = useStore((state) => state);
+
   return (
     <>
       <SmallModal
@@ -285,7 +287,7 @@ function Models({
             customStylingWarning={{ border: "1px solid #B00020" }}
             buttonProps={{
               onClick: () => {
-
+                if(!bill) return;
                 const validateGetErrors = new Validator()
                   .input(quantity)
                   .required()
@@ -298,13 +300,15 @@ function Models({
                   isArrayNotEmpty(validateGetErrors) &&
                   validateGetErrors[0].isValid === false
                 ) {
-                  setQuantityError(validateGetErrors[0].message);
-                  return;
+                  return setQuantityError(validateGetErrors[0].message);
                 }
-                setIsHideRefund(true);
-                setQuantityError('');
-                setQuantity(0);
-                toaster(<ToasterMessage> Refunded! </ToasterMessage>);
+                (async () => {
+                  const updatedBill = await dataStore.refundBill(bill, quantity);
+                  toaster(<ToasterMessage> Refunded! </ToasterMessage>);
+                  setIsHideRefund(true);
+                  setQuantityError('');
+                  setQuantity(0);
+                })();
               },
             }}
           >

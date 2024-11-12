@@ -56,8 +56,8 @@ export default function itemsUseStore(
         }
         return false;
       } catch (error) {
-        return false;
         console.error("Error adding item:", error);
+        return false;
       }
     },
 

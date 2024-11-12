@@ -52,6 +52,8 @@ const ItemList: React.FC = ({
                 className="w-full flex flex-row justify-between items-center p-4 border-b gap-1"
               >
                 <ItemDeleteButton
+                  item={item}
+                  set_items={set_items}
                   disableDeleteButton={rest.disableDeleteButton}
                 />
                 {/* <ItemCheckboxInput disableCheckbox={rest.disableCheckbox} /> */}

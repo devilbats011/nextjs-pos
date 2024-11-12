@@ -30,9 +30,9 @@ export default function Topbar() {
           ☰
         </div>
 
-        {(pathName === "/user/sales" || pathName === "/user/sales/order") && (
+        {pathName === "/user/sales" || pathName === "/user/sales/order" || pathName === "/user" ? (
           <LeftDivSales />
-        )}
+        ): null}
       </div>
       <RightDivManager />
     </nav>
@@ -41,11 +41,11 @@ export default function Topbar() {
 
 function RightDivManager() {
   const pathName = usePathname() as pathNameProps;
-  if (pathName === "/user/sales") {
+  if (pathName === "/user/sales" || pathName === "/user/sales/order" || pathName === "/user" ) {
     return <RightDivSales />;
-  } else if (pathName === "/user/orders") {
+  } else if (pathName == "/user/orders") {
     return null;
-  } else if (pathName === "/user/items") {
+  } else if (pathName == "/user/items") {
     return null;
   }
   return null;

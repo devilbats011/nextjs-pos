@@ -28,9 +28,7 @@ export default function Page() {
     dataStore.fetchItems();
     const tempGroupedItemList = dataStore.groupedItemList();
     setGroupedItemList(tempGroupedItemList);
-
   }, [splitOrder]);
-
 
   return (
     <div className="flex flex-col gap-4">
@@ -95,7 +93,10 @@ function TableStorage({ items }: { items: GroupItemProps[] }) {
               className="bg-white border-b  font-bold cursor-auto"
               onClick={() => null}
             >
-              <th scope="row" className="px-3 py-4 text-sm font-light whitespace-nowrap ">
+              <th
+                scope="row"
+                className="px-3 py-4 text-sm font-light whitespace-nowrap "
+              >
                 {item.name}
               </th>
               <td className="px-6 py-4 text-base text-center ">
@@ -193,7 +194,8 @@ function SplitOrderDiv({
       return;
     }
 
-    const item_price = items.find((i) => i.id === item.id)?.itemPrice;
+    const _item_price = items.find((i) => i.id === item.id)?.itemPrice;
+    const item_price = parseFloat(_item_price as unknown as string);
     const sumPrice = (item.quantity + 1) * (item_price ?? 0);
 
     console.log(item_price, "item_price", sumPrice);
@@ -247,7 +249,8 @@ function SplitOrderDiv({
 
     let newSplitOrderItems = [] as splitOrderItemsProps[];
 
-    const item_price = dataStore.items.find((i) => i.id === item.id)?.price;
+    const _item_price = dataStore.items.find((i) => i.id === item.id)?.price;
+    const item_price = parseFloat(_item_price as unknown as string);
     const sumPrice = (item.quantity - 1) * (item_price ?? 0);
     console.log(item_price, "item_price", sumPrice);
 
@@ -298,15 +301,16 @@ function SplitOrderDiv({
     }
     const tempGroupItemListParent = groupedItemListParent.map((item) => {
       if (item.id === itemId) {
-        const q = (item.quantity += quantity);
-        console.log(q);
+        if (String(quantity).includes("-")) {
+          const newStringQuantity = String(quantity).replace("-", "");
+          quantity = 0 - parseInt(newStringQuantity);
+        }
+        const q = parseInt(item.quantity as unknown as string) + quantity;
         item.quantity = q <= 0 ? 0 : q;
-        console.log(item.quantity);
         return item;
       }
       return item;
     });
-
     setGroupedItemList(tempGroupItemListParent);
   };
 

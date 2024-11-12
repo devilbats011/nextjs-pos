@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseUrlOrders as baseUrl } from "../helper/constant";
 import { fetchWithAuth } from "../helper/helper";
-import { OrdersStateInterface, OrderProp, ItemProps } from "./interface/item";
+import {
+  OrdersStateInterface,
+  OrderProp,
+  ItemProps,
+  BillProp,
+} from "./interface/item";
 
 export default function ordersUseStore(
   set: any,
@@ -35,13 +40,14 @@ export default function ordersUseStore(
         return undefined;
       }
     },
+    //? orderItems not much use..see getOrderItems()
     orderItems: [],
     setOrderItems: (item: unknown) =>
       set((state: any) => {
         const orderItems = state.getOrderItems();
         orderItems.push(item);
         sessionStorage.setItem("orderItems", JSON.stringify(orderItems));
-        return { orderItems: orderItems };
+        return { orderItems };
       }),
     getOrderItems: () => {
       const orderItems = sessionStorage.getItem("orderItems");
@@ -53,9 +59,20 @@ export default function ordersUseStore(
       }
       return [];
     },
+    deleteGroupOrderItemsById: (id: string): void => {
+      const orderItems = sessionStorage.getItem("orderItems");
+      if (!orderItems) {
+        return;
+      }
+      set((state: any) => {
+        const parsedOrderItems = JSON.parse(orderItems);
+        const newOrderItems = parsedOrderItems.filter((item: any) => item.id !== id);
+        sessionStorage.setItem("orderItems", JSON.stringify(newOrderItems));
+        return { orderItems: newOrderItems };
+      });
+    },
     clearOrderItems: () => {
       set({ orderItems: [] });
-      // set({ items: [] });
       sessionStorage.removeItem("orderItems");
     },
     deleteOrderItem: (item: any) => {
@@ -138,7 +155,8 @@ export default function ordersUseStore(
       let total = 0;
       if (arr) {
         total = arr.reduce(
-          (total: any, item: any) => total + parseFloat(item.price) * item.quantity,
+          (total: any, item: any) =>
+            total + parseFloat(item.price) * item.quantity,
           0
         );
         //decimal 2 point
@@ -146,6 +164,25 @@ export default function ordersUseStore(
         return total.toFixed(2);
       }
       return total.toFixed(2);
+    },
+    refundBill: (bill: BillProp, quantity: number) => {
+      return fetchWithAuth(baseUrl + "/" + bill.id, {
+        method: "PUT",
+        body: JSON.stringify({
+          quantity,
+        }),
+      })
+        .then((res) => {
+          if (res.ok) return res.json();
+          return null;
+        })
+        .catch((error) => {
+          console.error("Error refunding bill:", error);
+          return null;
+        });
+      // .finally(() => {
+      //   console.log("Finnaly refundBill");
+      // })
     },
   };
 

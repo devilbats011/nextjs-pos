@@ -108,4 +108,6 @@ export interface OrdersStateInterface {
   decrementOrderItemQuantity: (id: string)=> ItemProps[];
   depositSplitOrderToStorageById?: any;
   withdrawSplitOrderFromStorageById?: any;
+  refundBill: (bill: BillProp, quantity: number) => Promise<any>;
+  deleteGroupOrderItemsById: (id: string) => void;
 }
