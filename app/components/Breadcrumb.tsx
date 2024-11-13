@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 "use client";
 
-import { pathNameProps } from "@/hooks/helper/interface";
+import { pathNameProps } from "@/app/Interface/interface";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Home from "./svg/Home";

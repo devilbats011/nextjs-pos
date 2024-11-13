@@ -1,15 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// export interface ItemProps {
-//   id?: any;
-//   name?: any;
-//   price?: any;
-//   quantity?: any;
-//   id_category?: any;
-//   status?: any;
-//   created_at?: any;
-//   updated_at?: any;
-//   representation?: undefined|null|string;
-// }
 
 export interface ItemProps {
   id?: string;
@@ -93,6 +82,8 @@ export interface SplitOrderStorage {
 
 export type SplitOrders = SplitOrderProps[];
 
+export type bill_status_type = 'unpaid' | 'paid' | 'refund' | 'mix';
+
 export interface OrdersStateInterface {
   orders: OrderProp[]; // Assuming `OrderProp` is an array of order items
   getOrders: () => Promise<OrderProp[]>; // Returns a promise with an array of orders
@@ -105,9 +96,12 @@ export interface OrdersStateInterface {
   groupedItemList: () => GroupItemProps[];
   getTotalOrderItemsPrice: () => any;
   incrementOrderItemQuantity: any;
-  decrementOrderItemQuantity: (id: string)=> ItemProps[];
+  decrementOrderItemQuantity: (id: string) => ItemProps[];
   depositSplitOrderToStorageById?: any;
   withdrawSplitOrderFromStorageById?: any;
   refundBill: (bill: BillProp, quantity: number) => Promise<any>;
   deleteGroupOrderItemsById: (id: string) => void;
+  createOrder: (data: GroupItemProps[], bill_status?: bill_status_type) => Promise<OrderProp>;
+  createSplitBillOrder: any;
+  isOrderItemsEmpty:() => boolean;
 }

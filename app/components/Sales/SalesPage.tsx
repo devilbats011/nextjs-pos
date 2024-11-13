@@ -8,9 +8,9 @@ import SearchItem from "@/app/components/SearchItem/page";
 
 import ToasterMessage from "@/app/components/ToasterMessage";
 import { formatPrice, isArrayNotEmpty } from "@/hooks/helper/helper";
-import { pathNameProps } from "@/hooks/helper/interface";
+import { pathNameProps } from "@/app/Interface/interface";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
-import { CategoryProps } from "@/hooks/zustand/interface/category";
+import { CategoryProps } from "@/hooks/zustand/interface/backend/category";
 import { ItemProps } from "@/hooks/zustand/interface/item";
 import itemsUseStore from "@/hooks/zustand/itemsUseStore";
 import useStore from "@/hooks/zustand/useStore";

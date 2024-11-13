@@ -14,7 +14,7 @@ import ToasterMessage from "@/app/components/ToasterMessage";
 import { getObjectFromArrayById } from "@/hooks/helper/helper";
 import useItem from "@/hooks/item/useItem";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
-import { CategoryProps } from "@/hooks/zustand/interface/category";
+import { CategoryProps } from "@/hooks/zustand/interface/backend/category";
 import { ItemProps } from "@/hooks/zustand/interface/item";
 import useStore from "@/hooks/zustand/useStore";
 import { useParams, useRouter } from "next/navigation";

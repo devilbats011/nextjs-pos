@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import RightDivSales from "../../Topbar/RightDivSales";
 import { usePathname, useSearchParams } from "next/navigation";
 import LeftDivSales from "../../Topbar/LeftDivSales";
-import { pathNameProps } from "@/hooks/helper/interface";
+import { pathNameProps } from "@/app/Interface/interface";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import ToasterMessage from "../../ToasterMessage";
 

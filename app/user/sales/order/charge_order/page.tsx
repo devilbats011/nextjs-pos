@@ -105,12 +105,10 @@ export default function Page() {
                     return;
                   }
                 }
-                backendCreateOrderFullyPaid(dataStore.getOrderItems());
-
-                // toast(<ToasterMessage>....</ToasterMessage>, {
-                //   position: "top-center",
-                //   duration: 1000,
-                // });
+                (async ()=> {
+                  const data = await dataStore.createOrder(dataStore.groupedItemList(),'paid');
+                  console.log(data,'CiiiO');
+                })();
               },
             }}
           >

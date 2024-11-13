@@ -1,7 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { CategoryProps } from "@/hooks/zustand/interface/category";
+import { CategoryProps } from "@/hooks/zustand/interface/backend/category";
 import { isArrayNotEmpty, updateObjectArray } from "@/hooks/helper/helper";
 import ItemRepresentative from "../ItemsReadonly/ItemsReadonlyComponents/ItemRepresentative";
 import ItemName from "../ItemList/ItemListComponents/ItemName";

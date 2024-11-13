@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { create } from "domain";
 import { baseUrlOrders as baseUrl } from "../helper/constant";
-import { fetchWithAuth } from "../helper/helper";
+import { fetchWithAuth, isArrayEmpty, uuid } from "../helper/helper";
 import {
   OrdersStateInterface,
   OrderProp,
   ItemProps,
   BillProp,
+  GroupItemProps,
+  bill_status_type,
 } from "./interface/item";
 
 export default function ordersUseStore(
@@ -66,7 +69,9 @@ export default function ordersUseStore(
       }
       set((state: any) => {
         const parsedOrderItems = JSON.parse(orderItems);
-        const newOrderItems = parsedOrderItems.filter((item: any) => item.id !== id);
+        const newOrderItems = parsedOrderItems.filter(
+          (item: any) => item.id !== id
+        );
         sessionStorage.setItem("orderItems", JSON.stringify(newOrderItems));
         return { orderItems: newOrderItems };
       });
@@ -184,6 +189,91 @@ export default function ordersUseStore(
       //   console.log("Finnaly refundBill");
       // })
     },
+    createOrder: (
+      data: GroupItemProps[],
+      bill_status: bill_status_type = 'unpaid'
+    ): Promise<OrderProp> => {
+      return fetchWithAuth(baseUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          groupedItemList: data,
+          bill_status,
+        }),
+      })
+        .then((res) => {
+          if (res.ok) return res.json();
+          return null;
+        })
+        .catch((error) => {
+          console.error("Error creating order:", error);
+          return null;
+        });
+    },
+    createOrderDummies: (data: GroupItemProps[], bill_status: string) => {
+      const orderItems = get().getOrderItems();
+      // ...
+      return (async () => {
+        await setTimeout(() => {}, 300);
+
+        const bills: BillProp[] = [
+          {
+            id: uuid(),
+            item_id: "9d76cde0-22d2-4765-8b46-9d79d36b5d22",
+            status: bill_status, //unpaid
+            order_id: "",
+            item_quantity: 0,
+            created_at: "",
+            updated_at: "",
+            refund_id: null,
+            item: {
+              name: "",
+              price: "",
+              quantity: 0,
+            },
+          },
+        ];
+
+        return {
+          //order
+          // unprepared
+          id: uuid(),
+          status: bill_status, //'unpaid',
+          user_id: "9d6ffbbb-c31e-4b46-8ea3-1c9f93374682",
+        };
+      })();
+    },
+    createSplitBillOrder: async (
+      order: OrderProp,
+      bill: BillProp,
+      bill_status: string
+    ) => {
+      await setTimeout(() => {}, 500);
+      const getOrderItems = get().getOrderItems();
+      //  set
+      // bill dummy return
+      return {
+        id: uuid(),
+        item_id: "9d76cde0-22d2-4765-8b46-9d79d36b5d22", // shawarma
+        status: bill_status, //unpaid
+        order_id: "",
+        item_quantity: 0,
+        created_at: "",
+        updated_at: "",
+        refund_id: null,
+        item: {
+          name: "",
+          price: "",
+          quantity: 0,
+        },
+      } as BillProp;
+    },
+    isOrderItemsEmpty() {
+      const orderItems = get().getOrderItems();
+      if(isArrayEmpty(orderItems)) {
+        return true;
+      }
+      return false;
+    }
   };
 
   return useStore;

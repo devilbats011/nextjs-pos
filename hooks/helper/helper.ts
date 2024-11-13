@@ -149,14 +149,32 @@ export function updateObjectArrayById<T>(
  * @returns {boolean} `true` if the array is not empty; otherwise, `false`.
  *
  * @example
- * // Returns false because the array is not empty
- * isArrayEmpty([1, 2, 3]);
+ * // Returns true because the array is not empty
+ * isArrayNotEmpty([1, 2, 3]);
  *
- * // Returns true because the array is empty
- * isArrayEmpty([]);
+ * // Returns false because the array is empty
+ * isArrayNotEmpty([]);
  */
 export function isArrayNotEmpty<T>(arr: T[]): boolean {
   return Array.isArray(arr) && arr.length > 0 ? true : false;
+}
+
+/**
+ * Checks if an array is empty.
+ *
+ * @template T - The type of elements in the array.
+ * @param {T[]} arr - The array to check.
+ * @returns {boolean} `true` if the array is empty; otherwise, `false`.
+ *
+ * @example
+ * // Returns true because the array is empty
+ * isArrayEmpty([]);
+ *
+ * // Returns false because the array is not empty
+ * isArrayEmpty([1, 2, 3]);
+ */
+export function isArrayEmpty<T>(arr: T[]): boolean {
+  return Array.isArray(arr) && arr.length === 0;
 }
 
 export async function fetchWithAuth(
@@ -172,9 +190,8 @@ export async function fetchWithAuth(
   }
 ) {
   // Get the token from cookies
-  const token = getCookie(auth_token_name); // Replace 'token' with the actual cookie name
+  const token = getCookie(auth_token_name);
 
-  // Set up headers if not already provided
   options.headers = {
     ...options.headers,
     Accept: "*/*",

@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export interface CategoryProps {
-  id?: any;
-  name?: string;
-  created_at?: any;
-  updated_at?: any;
-  status?: any;
-
-}
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CategoryProps } from "./backend/category";
+// export interface CategoryProps {
+//   id?: any;
+//   name?: string;
+//   created_at?: any;
+//   updated_at?: any;
+//   status?: any;
 
 export interface categoryUseStoreInterface {
   category: CategoryProps[];

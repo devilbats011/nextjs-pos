@@ -15,27 +15,50 @@ import {
   SplitOrderProps,
 } from "@/hooks/zustand/interface/item";
 import useStore, { useStoreProps } from "@/hooks/zustand/useStore";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export default function Page() {
   const r = useRouter();
-  const [splitOrder, setSplitOrder] = useState(2);
+  const [splitOrderPerPerson, setSplitOrderPerPerson] = useState(2);
   const { ...dataStore } = useStore((state) => state);
   const [groupedItemList, setGroupedItemList] = useState<GroupItemProps[]>([]);
+  const { id }: { id: string } = useParams();
+
+  useEffect(() => {
+    dataStore.setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     dataStore.fetchItems();
-    const tempGroupedItemList = dataStore.groupedItemList();
-    setGroupedItemList(tempGroupedItemList);
-  }, [splitOrder]);
+    (async () => {
+      const order = await dataStore.getOrderById(id);
+      if (!order) return;
+      const tempGroupedItemList: GroupItemProps[] = order.bills.map(
+        (bill, index) => {
+          const {
+            item: { id, name, price: itemPrice },
+            item_quantity: quantity,
+          } = bill;
+          return {
+            id,
+            name,
+            price: quantity * parseFloat(itemPrice as string),
+            quantity,
+            itemPrice,
+          } as GroupItemProps;
+        }
+      );
+      setGroupedItemList(tempGroupedItemList);
+    })();
+  }, [splitOrderPerPerson]);
 
   return (
     <div className="flex flex-col gap-4">
       <Breadcrumb
         crumbs={[
           { name: "Sales", href: "/user/sales" },
-          { name: "Order", href: "/user/sales/order" },
+          //   { name: "Order", href: "/user/sales/order" },
           { name: "Split Order", href: "#" }, // /user/split_order
         ]}
       />
@@ -47,23 +70,27 @@ export default function Page() {
         <Header1> Split Order Per Person </Header1>
         <input
           type="number"
-          onChange={(e) => setSplitOrder(parseInt(e.target.value))}
+          onChange={(e) => setSplitOrderPerPerson(parseInt(e.target.value))}
           min={1}
           max={5}
           className="border py-2.5 text-xl rounded"
-          defaultValue={splitOrder}
+          defaultValue={splitOrderPerPerson}
           style={{ width: "80px", paddingLeft: "1.8rem" }}
         />
       </div>
       <br />
       <TableStorage items={groupedItemList} />
-      {Array.isArray(groupedItemList) && groupedItemList.length > 0 && (
+      {Array.isArray(groupedItemList) && groupedItemList.length > 0 ? (
         <SplitOrderDiv
-          splitOrderNumber={splitOrder}
+          splitOrderNumber={splitOrderPerPerson}
           items={groupedItemList}
           dataStore={dataStore}
           setGroupedItemList={setGroupedItemList}
         />
+      ) : (
+        <div className="text-gray-300 font-semibold text-center py-4 text-lg">
+          No Items..
+        </div>
       )}
     </div>
   );

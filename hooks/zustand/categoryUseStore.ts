@@ -2,7 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseUrlCategory as baseUrl } from "../helper/constant";
 import { fetchWithAuth } from "../helper/helper";
-import { CategoryProps, categoryUseStoreInterface } from "./interface/category";
+import { CategoryProps } from "./interface/backend/category";
+import { categoryUseStoreInterface } from "./interface/category";
 
 export default function categoryUseStore(
   set: (fn: (state: any) => any) => void,
@@ -102,6 +103,7 @@ export default function categoryUseStore(
         return false;
       }
     },
+
   };
 
   return useStore;

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { CategoryProps } from "../zustand/interface/category";
 import { ItemProps } from "../zustand/interface/item";
 import useStore from "../zustand/useStore";
+import { CategoryProps } from "../zustand/interface/backend/category";
 
 export default function useItem() {
   const { getCategory } = useStore((state) => state);

@@ -4,11 +4,23 @@ import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import Header1 from "@/app/components/Headers/Header1";
 import ItemList from "@/app/components/ItemList/page";
+import ToasterMessage from "@/app/components/ToasterMessage";
+import { useSonnerToast } from "@/hooks/useSonnerToast";
+import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export default function Page() {
   const router = useRouter();
+  const { setIsLoading } = useStore((state) => state);
+  const { ...dataStore } = useStore((state) => state);
+  const { toaster } = useSonnerToast();
+
+  useEffect(() => {
+    if (dataStore.isOrderItemsEmpty()) {
+      router.back();
+    }
+  }, []);
 
   return (
     <>
@@ -39,7 +51,25 @@ export default function Page() {
         <ButtonBig
           buttonProps={{
             onClick: () => {
-              router.push("/user/sales/order/split_order");
+              // setIsLoading(true);
+              // TODO: await from createOrder then use the order id to go router push and make isloading false
+              async function execute() {
+                const data = await dataStore.createOrder(
+                  dataStore.groupedItemList()
+                );
+
+                console.log(data, "ddd");
+
+                if (!data) {
+                  toaster(<ToasterMessage> Something Wrong </ToasterMessage>);
+                  return;
+                }
+                toaster(<ToasterMessage> Order Created </ToasterMessage>);
+                // dataStore.clearOrderItems();
+                console.log(data, "??ss-oo??");
+                // router.push("/user/sales/order/split_order/"+ data.id);
+              }
+              execute();
             },
           }}
         >

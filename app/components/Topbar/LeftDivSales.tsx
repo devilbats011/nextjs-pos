@@ -1,7 +1,7 @@
 "use client";
 
 import { isArrayNotEmpty } from "@/hooks/helper/helper";
-import { pathNameProps } from "@/hooks/helper/interface";
+import { pathNameProps } from "@/app/Interface/interface";
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
 

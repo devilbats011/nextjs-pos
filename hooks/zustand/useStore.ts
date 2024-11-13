@@ -11,12 +11,11 @@ export interface useStoreProps
   extends itemsUseStoreProps,
     categoryUseStoreInterface,
     OrdersStateInterface {
-
   toggleSidebar: any;
   sidebarIsOpen: boolean;
- 
   setSidebarIsOpen: any;
-
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   // editCategory: (
   //   id: number | string,
   //   updatedItem: Partial<CategoryProps>
@@ -36,5 +35,8 @@ export default create(
       const setSidebarIsOpen = get().setSidebarIsOpen;
       setSidebarIsOpen(!get().sidebarIsOpen);
     },
+    //* Note: isLoading and setIsLoading uses in LoadingOverlay page ... LoadingOverlay page have z-index 50
+    isLoading: false,
+    setIsLoading: (isLoading: boolean) => set((state: any) => ({ isLoading })),
   })
 );
