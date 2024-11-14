@@ -73,6 +73,7 @@ export interface SplitOrderProps {
   splitOrderItems: splitOrderItemsProps[];
   totalSumPrice: number;
   id: string;
+  isPaid: boolean,
 }
 
 export interface SplitOrderStorage {

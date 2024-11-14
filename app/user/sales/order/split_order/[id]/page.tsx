@@ -4,9 +4,12 @@ import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import ButtonSmall from "@/app/components/Buttons/ButtonSmall";
 import Header1 from "@/app/components/Headers/Header1";
+import { baseUrlOrders } from "@/hooks/helper/constant";
 import {
+  fetchWithAuth,
   formatPrice,
   getObjectFromArrayById,
+  updateObjectArrayById,
   uuid,
 } from "@/hooks/helper/helper";
 import { GroupItemProps, ItemProps } from "@/hooks/zustand/interface/item";
@@ -34,22 +37,25 @@ export default function Page() {
     (async () => {
       const order = await dataStore.getOrderById(id);
       if (!order) return;
-      const tempGroupedItemList: GroupItemProps[] = order.bills.map(
-        (bill, index) => {
-          const {
-            item: { id, name, price: itemPrice },
-            item_quantity: quantity,
-          } = bill;
-          return {
-            id,
-            name,
-            price: quantity * parseFloat(itemPrice as string),
-            quantity,
-            itemPrice,
-          } as GroupItemProps;
-        }
-      );
-      setGroupedItemList(tempGroupedItemList);
+      (() => {
+        //* cast order.bills to GroupedItemList and then setGroupedItemList
+        const tempGroupedItemList: GroupItemProps[] = order.bills.map(
+          (bill, index) => {
+            const {
+              item: { id, name, price: itemPrice },
+              item_quantity: quantity,
+            } = bill;
+            return {
+              id,
+              name,
+              price: quantity * parseFloat(itemPrice as string),
+              quantity,
+              itemPrice,
+            } as GroupItemProps;
+          }
+        );
+        setGroupedItemList(tempGroupedItemList);
+      })();
     })();
   }, [splitOrderPerPerson]);
 
@@ -153,6 +159,8 @@ function SplitOrderDiv({
 }) {
   const [SplitOrders, setSplitOrders] = useState<SplitOrderProps[]>([]);
 
+  const { id: order_id }: { id: string } = useParams();
+
   useEffect(() => {
     console.log("splitOrderNumber", splitOrderNumber, "items", items);
     // if (!items || items.length === 0) return;
@@ -185,6 +193,7 @@ function SplitOrderDiv({
           splitOrderItems,
           id: uuid(),
           totalSumPrice: 0,
+          isPaid: false,
         },
       ])
     );
@@ -205,8 +214,6 @@ function SplitOrderDiv({
     //   setSplitOrders((prev) => prev.slice(0, -1));
     // }
     // }
-
-    return () => {};
   }, [splitOrderNumber]);
 
   function addOne(order: SplitOrderProps, item: splitOrderItemsProps) {
@@ -251,8 +258,6 @@ function SplitOrderDiv({
       decrementOrderItemQuantity(_item.id);
       // dataStore.decrementOrderItemQuantity(_item.id);
     }
-
-    // console.log("newSplitOrderItems", newSplitOrderItems, dataStore.items);
 
     setSplitOrders((prev) =>
       prev.map((o) =>
@@ -342,68 +347,102 @@ function SplitOrderDiv({
   };
 
   return (
-    <div>
-      {/* {JSON.stringify(SplitOrders,null,1)} */}
-      {/* {JSON.stringify(items,null,1)} */}
-
-      {/* {Array.from({ length: splitOrderNumber }).map((_, index) => ( */}
+    <div className="space-y-10">
       {SplitOrders.map((order: SplitOrderProps, index: number) => (
-        <div key={index} className="p-4 border border-gray-300 m-2 ">
-          <div className="flex gap-4 justify-center items-center flex-col">
+        <div key={index} className="py-2 border-2 m-2">
+          <div className=" py-4">
             {order.splitOrderItems.map((item: splitOrderItemsProps) => (
-              <div className="flex gap-2 flex-row" key={item.id}>
-                <ButtonSmall
-                  buttonProps={{
-                    onClick: () => removeOne(order, item),
-                  }}
-                >
-                  -
-                </ButtonSmall>
-                <div className="flex justify-center items-center">
-                  {item.name}
-                </div>
-                <ButtonSmall
-                  buttonProps={{
-                    onClick: () => addOne(order, item),
-                  }}
-                >
-                  +
-                </ButtonSmall>
+              <div
+                className="grid grid-cols-3 grid-rows-3 sm:grid-cols-5 sm:grid-rows-1 gap-y-4 border-b py-4"
+                style={{}}
+                key={item.id}
+              >
+                <div className="col-span-full sm:col-span-2 flex justify-center items-center gap-4">
+                  <span className="font-semibold">
 
-                <div className="flex justify-center items-center">
-                  {item.quantity}
+                  {item.name}
+                  </span>
+                  <div
+                    className=""
+                    style={{
+                      display: order.isPaid ? "none" : "flex",
+                    }}
+                  >
+                    x {item.quantity}
+                  </div>
                 </div>
-                <div className="flex justify-center items-center">
-                  Sum Price: {formatPrice(item.sumPrice)}
+
+                <div className="col-span-3 sm:col-span-2  flex gap-2 justify-center items-center">
+                  <ButtonSmall
+                    buttonProps={{
+                      style: {
+                        display: order.isPaid ? "none" : "inherit",
+                        height: "30px",
+                      },
+                      onClick: () => removeOne(order, item),
+                    }}
+                  >
+                    -
+                  </ButtonSmall>
+
+                  <ButtonSmall
+                    buttonProps={{
+                      style: {
+                        display: order.isPaid ? "none" : "inherit",
+                        height: "30px",
+                      },
+                      onClick: () => addOne(order, item),
+                    }}
+                  >
+                    +
+                  </ButtonSmall>
+                </div>
+
+                <div className="flex justify-center items-center col-span-3 sm:col-span-1">
+                  {formatPrice(item.sumPrice)}
                 </div>
               </div>
             ))}
-            {/* <div> Price To Paid: ___ </div> */}
-            {/* <div style={{ maxWidth: "300px" }}>{JSON.stringify({})} </div> */}
-
-            <div className="p-2 border flex justify-center items-center">
-              Total Sum Price: {formatPrice(order.totalSumPrice)}
+            <div className="flex justify-center items-center font-semibold relative">
+              <span className="top-4 relative">
+                Total Price: {formatPrice(order.totalSumPrice)}
+              </span>
             </div>
           </div>
-
-          <ButtonBig
-            buttonProps={{
-              onClick: (e) => {
-                // r.push("/user/sales/order/charge_order");
-                console.log(e);
-              },
-              style: { margin: "1rem 0" },
-            }}
-          >
-            Charged
-          </ButtonBig>
-          {/* <ItemList
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            disableDeleteButton
-            disableTotalItems
-            items={dataStore.groupedItemList()}
-          /> */}
+          <div className="w-full px-2">
+            <ButtonBig
+              buttonProps={{
+                disabled: order.isPaid,
+                onClick: (e) => {
+                  const updatedSplitOrders = updateObjectArrayById(
+                    SplitOrders,
+                    order.id,
+                    { ...order, isPaid: true }
+                  );
+                  setSplitOrders(updatedSplitOrders);
+                  return;
+                  (async () => {
+                    fetchWithAuth(baseUrlOrders + "/split-order/" + order_id, {
+                      method: "PUT",
+                      body: JSON.stringify(order),
+                    })
+                      .then((res) => {
+                        if (res.ok) {
+                        }
+                        return null;
+                      })
+                      .catch((e) => {
+                        console.error(e);
+                        return null;
+                      });
+                  })();
+                },
+                style: { margin: "1rem 0" },
+              }}
+            >
+              {order.isPaid ? "Paid" : "Charged"}
+            </ButtonBig>
+          </div>
         </div>
       ))}
     </div>
