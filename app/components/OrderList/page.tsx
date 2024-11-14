@@ -43,6 +43,7 @@ const OrderList: React.FC<any> = ({
   const { toaster } = useSonnerToast();
 
   useEffect(() => {
+    dataStore.setIsLoading(false);
     (async () => {
       const data = (await dataStore.getOrderById(rest.id)) as
         | OrderProp

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+
+
 export interface ItemProps {
   id?: string;
   name: string;
@@ -67,6 +69,8 @@ export interface splitOrderItemsProps {
   quantity: number;
   price: number;
   sumPrice: number;
+  bill_id: string;
+
 }
 
 export interface SplitOrderProps {
@@ -74,6 +78,7 @@ export interface SplitOrderProps {
   totalSumPrice: number;
   id: string;
   isPaid: boolean,
+  quantity_paid: number,
 }
 
 export interface SplitOrderStorage {
@@ -87,7 +92,8 @@ export type bill_status_type = 'unpaid' | 'paid' | 'refund' | 'mix';
 
 export interface OrdersStateInterface {
   orders: OrderProp[]; // Assuming `OrderProp` is an array of order items
-  getOrders: () => Promise<OrderProp[]>; // Returns a promise with an array of orders
+  getOrders: () => Promise<OrderProp[]>;
+  getOrdersByChunks: (chunks: number, number_of_item_per_chunk: number) => Promise<OrderProp[] | null>;
   getOrderById: (id: string) => Promise<OrderProp | undefined>; // Returns a promise with a single order or undefined
   orderItems: any[];
   setOrderItems: any;
@@ -105,4 +111,6 @@ export interface OrdersStateInterface {
   createOrder: (data: GroupItemProps[], bill_status?: bill_status_type) => Promise<OrderProp>;
   createSplitBillOrder: any;
   isOrderItemsEmpty:() => boolean;
+  totalQuantitySplitOrderPage: number,
+  setTotalQuantitySplitOrderPage: (value: number)=>any,
 }

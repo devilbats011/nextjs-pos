@@ -191,7 +191,7 @@ export default function ordersUseStore(
     },
     createOrder: (
       data: GroupItemProps[],
-      bill_status: bill_status_type = 'unpaid'
+      bill_status: bill_status_type = "unpaid"
     ): Promise<OrderProp> => {
       return fetchWithAuth(baseUrl, {
         method: "POST",
@@ -269,11 +269,38 @@ export default function ordersUseStore(
     },
     isOrderItemsEmpty() {
       const orderItems = get().getOrderItems();
-      if(isArrayEmpty(orderItems)) {
+      if (isArrayEmpty(orderItems)) {
         return true;
       }
       return false;
-    }
+    },
+    totalQuantitySplitOrderPage: 0,
+    setTotalQuantitySplitOrderPage(value: number) {
+      set((state: any) => {
+        const totalQuantitySplitOrderPage = value;
+        return { totalQuantitySplitOrderPage };
+      });
+      return value;
+    },
+    getOrdersByChunks(
+      chunks: number,
+      number_of_item_per_chunk: number
+    ){
+      return fetchWithAuth(
+        baseUrl +
+          `/chunks?chunks=${chunks}&number_of_item_per_chunk=${number_of_item_per_chunk}`
+      )
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return null;
+        })
+        .catch((e) => {
+          console.error(e);
+          return null;
+        });
+    },
   };
 
   return useStore;

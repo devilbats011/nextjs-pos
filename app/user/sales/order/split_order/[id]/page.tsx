@@ -4,14 +4,17 @@ import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import ButtonSmall from "@/app/components/Buttons/ButtonSmall";
 import Header1 from "@/app/components/Headers/Header1";
+import ToasterMessage from "@/app/components/ToasterMessage";
 import { baseUrlOrders } from "@/hooks/helper/constant";
 import {
   fetchWithAuth,
   formatPrice,
   getObjectFromArrayById,
+  isArrayNotEmpty,
   updateObjectArrayById,
   uuid,
 } from "@/hooks/helper/helper";
+import { useSonnerToast } from "@/hooks/useSonnerToast";
 import { GroupItemProps, ItemProps } from "@/hooks/zustand/interface/item";
 import {
   splitOrderItemsProps,
@@ -21,12 +24,19 @@ import useStore, { useStoreProps } from "@/hooks/zustand/useStore";
 import { useParams, useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
+interface GroupItemPropsExtend extends GroupItemProps {
+  bill_id: string;
+}
+
 export default function Page() {
-  const r = useRouter();
+  const router = useRouter();
   const [splitOrderPerPerson, setSplitOrderPerPerson] = useState(2);
   const { ...dataStore } = useStore((state) => state);
-  const [groupedItemList, setGroupedItemList] = useState<GroupItemProps[]>([]);
+  const [groupedItemList, setGroupedItemList] = useState<
+    GroupItemPropsExtend[]
+  >([]);
   const { id }: { id: string } = useParams();
+  const { toaster } = useSonnerToast();
 
   useEffect(() => {
     dataStore.setIsLoading(false);
@@ -38,22 +48,29 @@ export default function Page() {
       const order = await dataStore.getOrderById(id);
       if (!order) return;
       (() => {
-        //* cast order.bills to GroupedItemList and then setGroupedItemList
-        const tempGroupedItemList: GroupItemProps[] = order.bills.map(
+        const bills = order.bills.filter((bill) => bill.status == "unpaid");
+        //* cast bills to GroupedItemList and then setGroupedItemList
+        const tempGroupedItemList: GroupItemPropsExtend[] = bills.map(
           (bill, index) => {
             const {
               item: { id, name, price: itemPrice },
               item_quantity: quantity,
             } = bill;
             return {
+              bill_id: bill.id,
               id,
               name,
               price: quantity * parseFloat(itemPrice as string),
               quantity,
               itemPrice,
-            } as GroupItemProps;
+            } as GroupItemPropsExtend;
           }
         );
+        const totalQuantity = tempGroupedItemList.reduce(
+          (acc, groupItem) => acc + groupItem.quantity,
+          0
+        );
+        dataStore.setTotalQuantitySplitOrderPage(totalQuantity);
         setGroupedItemList(tempGroupedItemList);
       })();
     })();
@@ -76,7 +93,41 @@ export default function Page() {
         <Header1> Split Order Per Person </Header1>
         <input
           type="number"
-          onChange={(e) => setSplitOrderPerPerson(parseInt(e.target.value))}
+          onChange={(e) => {
+            e.preventDefault();
+            if (isNaN(e.target.value as any)) {
+              toaster(
+                <ToasterMessage>
+                  <span className="italic text-red-500">
+                    Value is not a number
+                  </span>
+                </ToasterMessage>
+              );
+              return;
+            }
+            if ((e.target.value as unknown as number) > 5) {
+              toaster(
+                <ToasterMessage>
+                  <span className="italic text-red-500">
+                    5 is the maximum number per person
+                  </span>
+                </ToasterMessage>
+              );
+              return;
+            }
+
+            if ((e.target.value as unknown as number) <= 0) {
+              toaster(
+                <ToasterMessage>
+                  <span className="italic text-red-500">
+                    1 is the minimum number per person
+                  </span>
+                </ToasterMessage>
+              );
+              return;
+            }
+            setSplitOrderPerPerson(parseInt(e.target.value));
+          }}
           min={1}
           max={5}
           className="border py-2.5 text-xl rounded"
@@ -89,7 +140,7 @@ export default function Page() {
       {Array.isArray(groupedItemList) && groupedItemList.length > 0 ? (
         <SplitOrderDiv
           splitOrderNumber={splitOrderPerPerson}
-          items={groupedItemList}
+          groupedItemList={groupedItemList}
           dataStore={dataStore}
           setGroupedItemList={setGroupedItemList}
         />
@@ -148,26 +199,26 @@ function TableStorage({ items }: { items: GroupItemProps[] }) {
 
 function SplitOrderDiv({
   splitOrderNumber,
-  items,
+  groupedItemList,
   dataStore,
   setGroupedItemList,
 }: {
   splitOrderNumber: number;
-  items: GroupItemProps[];
+  groupedItemList: GroupItemPropsExtend[];
   dataStore: useStoreProps;
-  setGroupedItemList: Dispatch<SetStateAction<GroupItemProps[]>>;
+  setGroupedItemList: Dispatch<SetStateAction<GroupItemPropsExtend[]>>;
 }) {
-  const [SplitOrders, setSplitOrders] = useState<SplitOrderProps[]>([]);
+  const [splitOrders, setSplitOrders] = useState<SplitOrderProps[]>([]);
 
   const { id: order_id }: { id: string } = useParams();
-
+  const router = useRouter();
   useEffect(() => {
-    console.log("splitOrderNumber", splitOrderNumber, "items", items);
     // if (!items || items.length === 0) return;
 
-    const splitOrderItems = items.map(
-      (item: GroupItemProps): splitOrderItemsProps => {
+    const splitOrderItems = groupedItemList.map(
+      (item: GroupItemPropsExtend): splitOrderItemsProps => {
         return {
+          bill_id: item.bill_id,
           id: item.id,
           name: item.name,
           quantity: 0,
@@ -181,7 +232,7 @@ function SplitOrderDiv({
       "splitOrderNumber",
       splitOrderNumber,
       "index",
-      SplitOrders.length
+      splitOrders.length
     );
 
     setSplitOrders((prev) => []);
@@ -194,6 +245,7 @@ function SplitOrderDiv({
           id: uuid(),
           totalSumPrice: 0,
           isPaid: false,
+          quantity_paid: 0,
         },
       ])
     );
@@ -222,13 +274,15 @@ function SplitOrderDiv({
 
     let newSplitOrderItems = [] as splitOrderItemsProps[];
 
-    const orderItem = getObjectFromArrayById(items, item.id);
+    const orderItem = getObjectFromArrayById(groupedItemList, item.id);
 
     if (orderItem && orderItem?.quantity <= 0) {
       return;
     }
 
-    const _item_price = items.find((i) => i.id === item.id)?.itemPrice;
+    const _item_price = groupedItemList.find(
+      (i) => i.id === item.id
+    )?.itemPrice;
     const item_price = parseFloat(_item_price as unknown as string);
     const sumPrice = (item.quantity + 1) * (item_price ?? 0);
 
@@ -237,6 +291,7 @@ function SplitOrderDiv({
     if (!_item) {
       // new item added
       _splitOrderItems.push({
+        bill_id: item.bill_id,
         id: item.id,
         quantity: 1,
         price: item.price,
@@ -326,7 +381,7 @@ function SplitOrderDiv({
   };
 
   const updateOrderItemQuantity = (itemId: string, quantity: number) => {
-    const groupedItemListParent = [...items]; // Copy the array to avoid mutating state directly
+    const groupedItemListParent = [...groupedItemList]; // Copy the array to avoid mutating state directly
     const tempItem = getObjectFromArrayById(groupedItemListParent, itemId);
     if (!tempItem) {
       return;
@@ -346,27 +401,30 @@ function SplitOrderDiv({
     setGroupedItemList(tempGroupItemListParent);
   };
 
+  const { toaster } = useSonnerToast(3000);
+
+  // console.log(dataStore.totalQuantitySplitOrderPage,'total');
+
   return (
     <div className="space-y-10">
-      {SplitOrders.map((order: SplitOrderProps, index: number) => (
+      {splitOrders.map((splitOrder: SplitOrderProps, index: number) => (
         <div key={index} className="py-2 border-2 m-2">
           <div className=" py-4">
-            {order.splitOrderItems.map((item: splitOrderItemsProps) => (
+            {splitOrder.splitOrderItems.map((item: splitOrderItemsProps) => (
               <div
                 className="grid grid-cols-3 grid-rows-3 sm:grid-cols-5 sm:grid-rows-1 gap-y-4 border-b py-4"
                 style={{}}
                 key={item.id}
               >
                 <div className="col-span-full sm:col-span-2 flex justify-center items-center gap-4">
-                  <span className="font-semibold">
-
-                  {item.name}
-                  </span>
+                  <span className="font-semibold">{item.name}</span>
                   <div
                     className=""
-                    style={{
-                      display: order.isPaid ? "none" : "flex",
-                    }}
+                    style={
+                      {
+                        // display: splitOrder.isPaid ? "none" : "flex",
+                      }
+                    }
                   >
                     x {item.quantity}
                   </div>
@@ -376,10 +434,10 @@ function SplitOrderDiv({
                   <ButtonSmall
                     buttonProps={{
                       style: {
-                        display: order.isPaid ? "none" : "inherit",
+                        display: splitOrder.isPaid ? "none" : "inherit",
                         height: "30px",
                       },
-                      onClick: () => removeOne(order, item),
+                      onClick: () => removeOne(splitOrder, item),
                     }}
                   >
                     -
@@ -388,10 +446,10 @@ function SplitOrderDiv({
                   <ButtonSmall
                     buttonProps={{
                       style: {
-                        display: order.isPaid ? "none" : "inherit",
+                        display: splitOrder.isPaid ? "none" : "inherit",
                         height: "30px",
                       },
-                      onClick: () => addOne(order, item),
+                      onClick: () => addOne(splitOrder, item),
                     }}
                   >
                     +
@@ -405,34 +463,86 @@ function SplitOrderDiv({
             ))}
             <div className="flex justify-center items-center font-semibold relative">
               <span className="top-4 relative">
-                Total Price: {formatPrice(order.totalSumPrice)}
+                Total Price: {formatPrice(splitOrder.totalSumPrice)}
               </span>
             </div>
           </div>
           <div className="w-full px-2">
             <ButtonBig
               buttonProps={{
-                disabled: order.isPaid,
+                disabled: splitOrder.isPaid,
                 onClick: (e) => {
+                  const isQuantityNot0 = isArrayNotEmpty(
+                    splitOrder.splitOrderItems.filter(
+                      (split_order_item, index) => {
+                        return split_order_item.quantity != 0;
+                      }
+                    )
+                  );
+
+                  if (!isQuantityNot0) {
+                    toaster(
+                      <ToasterMessage>
+                        <span className="text-red-500 text-sm">
+                          At least one item with a non-zero quantity.
+                        </span>
+                      </ToasterMessage>
+                    );
+                    return;
+                  }
+
                   const updatedSplitOrders = updateObjectArrayById(
-                    SplitOrders,
-                    order.id,
-                    { ...order, isPaid: true }
+                    splitOrders,
+                    splitOrder.id,
+                    { ...splitOrder, isPaid: true }
                   );
                   setSplitOrders(updatedSplitOrders);
-                  return;
+
                   (async () => {
+                    const accepted_one_split_order: SplitOrderProps = {
+                      ...splitOrder,
+                      splitOrderItems: splitOrder.splitOrderItems.filter(
+                        (orderItem) => orderItem.quantity > 0
+                      ),
+                    };
                     fetchWithAuth(baseUrlOrders + "/split-order/" + order_id, {
                       method: "PUT",
-                      body: JSON.stringify(order),
+                      body: JSON.stringify(accepted_one_split_order),
                     })
                       .then((res) => {
                         if (res.ok) {
+                          const updated_quantity_paid =
+                            accepted_one_split_order.splitOrderItems.reduce(
+                              (acc, split_order_item) =>
+                                acc + split_order_item.quantity,
+                              0
+                            );
+                          const updatedSplitOrders2 = updateObjectArrayById(
+                            updatedSplitOrders,
+                            accepted_one_split_order.id,
+                            { quantity_paid: updated_quantity_paid }
+                          );
+                          setSplitOrders(updatedSplitOrders2);
+
+                          if (
+                            updated_quantity_paid ==
+                            dataStore.totalQuantitySplitOrderPage
+                          ) {
+                            toaster(
+                              <ToasterMessage>Order Fully Paid</ToasterMessage>
+                            );
+                            setTimeout(() => {
+                              router.push("/user/sales");
+                            }, 500);
+                            return;
+                          }
+                          toaster(<ToasterMessage> Updated </ToasterMessage>);
                         }
+                        console.warn(res, res.json());
                         return null;
                       })
                       .catch((e) => {
-                        console.error(e);
+                        console.error(e.message);
                         return null;
                       });
                   })();
@@ -440,7 +550,7 @@ function SplitOrderDiv({
                 style: { margin: "1rem 0" },
               }}
             >
-              {order.isPaid ? "Paid" : "Charged"}
+              {splitOrder.isPaid ? "Paid" : "Charged"}
             </ButtonBig>
           </div>
         </div>

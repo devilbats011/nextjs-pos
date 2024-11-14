@@ -3,7 +3,11 @@
 
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
-import { formatPrice } from "@/hooks/helper/helper";
+import {
+  formatPrice,
+  isArrayEmpty,
+  updateObjectArray,
+} from "@/hooks/helper/helper";
 import { BillProp, OrderProp } from "@/hooks/zustand/interface/item";
 
 import useStore from "@/hooks/zustand/useStore";
@@ -15,13 +19,41 @@ export default function Page() {
   const router = useRouter();
 
   const [orders, setOrders] = useState<OrderProp[]>([]);
+  const [areThereMoreData, setAreThereMoreData] = useState(true);
+
+  const [chunksUrlParams, setChunksUrlParams] = useState<{
+    chunks: number;
+    number_of_item_per_chunk: number;
+  }>({
+    chunks: 1,
+    number_of_item_per_chunk: 5,
+  });
 
   useEffect(() => {
     (async () => {
-      const x = await dataStore.getOrders();
-      setOrders(x);
+      dataStore.setIsLoading(true);
+      const orders = await dataStore.getOrdersByChunks(
+        chunksUrlParams.chunks,
+        chunksUrlParams.number_of_item_per_chunk
+      );
+      if (!orders) return;
+      if (isArrayEmpty(orders)) {
+        setAreThereMoreData(false);
+      }
+      setOrders((prevOrders) => {
+        return [
+          ...prevOrders,
+          ...orders.filter(
+            (order) =>
+              !prevOrders.find((prevOrder) => prevOrder.id === order.id)
+          ),
+        ];
+      });
+      setTimeout(() => {
+        dataStore.setIsLoading(false);
+      }, 500);
     })();
-  }, []);
+  }, [chunksUrlParams]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -33,29 +65,45 @@ export default function Page() {
           },
         ]}
       />
-      {orders.map((order) => (
-        <div className="w-full relative " key={order.id}>
-          <ButtonBig color="secondary"
-          buttonProps={{
-            // disabled: true,
-            onClick: () => {
-              router.push(`/user/orders/order_detail/${order.id}`);
-            },
-          }}
-          >
-            <div
-              className="flex w-full justify-between items-center  font-normal gap-2 "
-              style={{ fontSize: "14px" }}
+      {Array.isArray(orders) &&
+        orders.map((order) => (
+          <div className="w-full relative " key={order.id}>
+            <ButtonBig
+              color="secondary"
+              buttonProps={{
+                onClick: () => {
+                  dataStore.setIsLoading(true);
+                  router.push(`/user/orders/order_detail/${order.id}`);
+                },
+              }}
             >
-              <StatusOrderManagerElement order={order} />
-              <DateManagerElement order={order} />
-              <GetTotalPrice bills={order.bills} />
-            </div>
-          </ButtonBig>
-        </div>
-      ))}
+              <div
+                className="flex w-full justify-between items-center  font-normal gap-2 "
+                style={{ fontSize: "14px" }}
+              >
+                <StatusOrderManagerElement order={order} />
+                <DateManagerElement order={order} />
+                <GetTotalPrice bills={order.bills} />
+              </div>
+            </ButtonBig>
+          </div>
+        ))}
 
-      {false && <ButtonBig>Show More</ButtonBig>}
+      <ButtonBig
+        buttonProps={{
+          disabled: !areThereMoreData,
+          onClick: () => {
+            setChunksUrlParams((prev_value) => {
+              return {
+                ...prev_value,
+                chunks: prev_value.chunks + 1,
+              };
+            });
+          },
+        }}
+      >
+        {areThereMoreData ? "Show More" : "No Data Left"}
+      </ButtonBig>
     </div>
   );
 }
@@ -117,8 +165,12 @@ function DateManagerElement({ order }: { order: OrderProp }) {
 function GetTotalPrice({ bills }: { bills: BillProp[] }): JSX.Element {
   let total: number = 0;
   bills.reduce((acc: string | number, { item, ...bills }) => {
-    total +=  (typeof item.price === "string" ? parseFloat(item.price) : item.price ) * bills.item_quantity;
+    total +=
+      (typeof item.price === "string" ? parseFloat(item.price) : item.price) *
+      bills.item_quantity;
     return total;
   }, 0);
-  return <div className="font-bold text-sm md:text-lg">{formatPrice(total)} </div>;
+  return (
+    <div className="font-bold text-sm md:text-lg">{formatPrice(total)} </div>
+  );
 }

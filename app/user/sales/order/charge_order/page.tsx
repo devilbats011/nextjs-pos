@@ -9,52 +9,32 @@ import ItemList from "@/app/components/ItemList/page";
 import ToasterMessage from "@/app/components/ToasterMessage";
 import { baseUrlOrders } from "@/hooks/helper/constant";
 import { isArrayNotEmpty } from "@/hooks/helper/helper";
+import { useSonnerToast } from "@/hooks/useSonnerToast";
 import Validator from "@/hooks/validator/Validator";
 import { ItemProps } from "@/hooks/zustand/interface/item";
 import useStore from "@/hooks/zustand/useStore";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Page() {
   const { ...dataStore } = useStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
   const { inputGroupError, setInputGroupError } = useErrorHandler();
-
-  // console.log(dataStore.getOrderItems(), "!");
+  const router = useRouter();
 
   const [inputText, setInputText] = useState<string>();
+  const { toaster } = useSonnerToast();
 
-  async function backendCreateOrderFullyPaid(OrderItems: ItemProps[]) {
-    const formData = new FormData();
-
-    setIsLoading(true);
-    formData.append(
-      "order",
-      JSON.stringify({ status: "fully_paid", orderItems: [...OrderItems] })
-    ); // sent to http api\order POST (backend) the backend will validate then create order|bill|item inside postgres db;
-    formData.append("user_id", "16931212221212121212"); // send userr Id...in the future there will be login acc or use sanctum auth
-    fetch(baseUrlOrders, {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => {
-        const data = res.json();
-        console.log(data);
-        return Response.json(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }
+  useEffect(() => {
+    dataStore.setIsLoading(false);
+  }, []);
 
   return (
     <div className="">
       <Breadcrumb
         crumbs={[
-          { name: "Home", href: "/user/sales/order" },
+          { name: "Home", href: "/user/sales" },
           {
             name: "Order",
             href: "/user/sales/order",
@@ -74,8 +54,8 @@ export default function Page() {
           disableAddRemoveButton
           disableDeleteButton
         />
-        <div className="flex flex-col gap-4 px-4">
-          <InputGroupText
+        <div className="flex flex-col gap-4">
+          {/* <InputGroupText
             id="charge_order"
             errorMessage={inputGroupError}
             inputProps={{
@@ -87,10 +67,11 @@ export default function Page() {
             }}
           >
             Send Email
-          </InputGroupText>
+          </InputGroupText> */}
 
           <ButtonBig
             buttonProps={{
+              disabled: isLoading,
               onClick: () => {
                 if (typeof inputText === "string" && !inputText) {
                   const validateGetErrors = new Validator()
@@ -105,9 +86,24 @@ export default function Page() {
                     return;
                   }
                 }
-                (async ()=> {
-                  const data = await dataStore.createOrder(dataStore.groupedItemList(),'paid');
-                  console.log(data,'CiiiO');
+                (async () => {
+                  setIsLoading(true);
+                  const data = await dataStore.createOrder(
+                    dataStore.groupedItemList(),
+                    "paid"
+                  );
+                  if (data) {
+                    setTimeout(() => {
+                      router.push("/user/sales");
+                    }, 500);
+                    dataStore.clearOrderItems();
+                    toaster(
+                      <ToasterMessage> Order Fully Paid </ToasterMessage>
+                    );
+                    return;
+                  }
+                  setIsLoading(false);
+                  toaster(<ToasterMessage> Something Wrong </ToasterMessage>);
                 })();
               },
             }}

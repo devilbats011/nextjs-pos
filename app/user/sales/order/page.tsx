@@ -24,7 +24,6 @@ export default function Page() {
 
   return (
     <>
-      {/* <Header1>Page Order</Header1> */}
       <Breadcrumb
         crumbs={[
           { name: "Sales", href: "/user/sales" },
@@ -42,6 +41,7 @@ export default function Page() {
         <ButtonBig
           buttonProps={{
             onClick: () => {
+              dataStore.setIsLoading(true);
               router.push("/user/sales/order/charge_order");
             },
           }}
@@ -51,23 +51,20 @@ export default function Page() {
         <ButtonBig
           buttonProps={{
             onClick: () => {
-              // setIsLoading(true);
-              // TODO: await from createOrder then use the order id to go router push and make isloading false
+              setIsLoading(true);
               async function execute() {
                 const data = await dataStore.createOrder(
                   dataStore.groupedItemList()
                 );
-
-                console.log(data, "ddd");
-
+                // console.log(data, "ddd");
                 if (!data) {
                   toaster(<ToasterMessage> Something Wrong </ToasterMessage>);
                   return;
                 }
                 toaster(<ToasterMessage> Order Created </ToasterMessage>);
-                // dataStore.clearOrderItems();
-                console.log(data, "??ss-oo??");
-                // router.push("/user/sales/order/split_order/"+ data.id);
+                dataStore.clearOrderItems();
+
+                router.push("/user/sales/order/split_order/"+ data.id);
               }
               execute();
             },
