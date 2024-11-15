@@ -3,6 +3,6 @@ export interface BillRefundDetailProps {
   bill_id: string | null;
   quantity: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }

@@ -6,7 +6,6 @@ import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import {
   formatPrice,
   isArrayEmpty,
-  updateObjectArray,
 } from "@/hooks/helper/helper";
 import { BillProp, OrderProp } from "@/hooks/zustand/interface/item";
 
@@ -26,10 +25,34 @@ export default function Page() {
     number_of_item_per_chunk: number;
   }>({
     chunks: 1,
-    number_of_item_per_chunk: 5,
+    number_of_item_per_chunk: 7,
   });
 
+  // useEffect(() => {
+
+  //   const chunks = parseIntOrNull(searchParams.get("chunks")) ?? 1;
+  //   const number_of_item_per_chunk = parseIntOrNull(searchParams.get('number_of_item_per_chunk')) ?? 7;
+  //   setChunksUrlParams((prev_value)=> {
+  //     return {
+  //       ...prev_value,
+  //       chunks,
+  //       number_of_item_per_chunk
+  //     }
+  //   });
+
+  // }, [searchParams]);
+
   useEffect(() => {
+    // if(chunksUrlParams.chunks == 0) {
+    //   return;
+    // }
+    // dataStore.setOrdersCrumbs(
+    //   "/user/orders?chunks=" +
+    //     chunksUrlParams.chunks +
+    //     "&number_of_item_per_chunk=" +
+    //     chunksUrlParams.number_of_item_per_chunk
+    // );
+
     (async () => {
       dataStore.setIsLoading(true);
       const orders = await dataStore.getOrdersByChunks(

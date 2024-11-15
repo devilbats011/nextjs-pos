@@ -73,7 +73,6 @@ export default function Page() {
           SPLIT ORDER
         </ButtonBig>
       </section>
-
       <ItemList
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

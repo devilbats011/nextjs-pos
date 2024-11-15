@@ -9,6 +9,7 @@ import {
   BillProp,
   GroupItemProps,
   bill_status_type,
+  refundBillResponse,
 } from "./interface/item";
 
 export default function ordersUseStore(
@@ -170,8 +171,8 @@ export default function ordersUseStore(
       }
       return total.toFixed(2);
     },
-    refundBill: (bill: BillProp, quantity: number) => {
-      return fetchWithAuth(baseUrl + "/" + bill.id, {
+    refundBill: (bill: BillProp, quantity: number) : Promise<refundBillResponse|null> => {
+      return fetchWithAuth(baseUrl + "/refund/" + bill.id, {
         method: "PUT",
         body: JSON.stringify({
           quantity,
@@ -185,9 +186,6 @@ export default function ordersUseStore(
           console.error("Error refunding bill:", error);
           return null;
         });
-      // .finally(() => {
-      //   console.log("Finnaly refundBill");
-      // })
     },
     createOrder: (
       data: GroupItemProps[],

@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { BillProps } from "./backend/bill";
+import { BillRefundDetailProps } from "./backend/bill_refund_detail";
+
 
 
 export interface ItemProps {
@@ -52,6 +55,7 @@ export interface BillProp {
   updated_at: string;
   refund_id: string | null;
   item: ItemProps;
+  bill_refund_details?: BillRefundDetailProps[];
 }
 
 export interface OrderProp {
@@ -90,6 +94,11 @@ export type SplitOrders = SplitOrderProps[];
 
 export type bill_status_type = 'unpaid' | 'paid' | 'refund' | 'mix';
 
+export interface refundBillResponse {
+  bill: BillProps,
+  bill_refund_details: BillRefundDetailProps[],
+}
+
 export interface OrdersStateInterface {
   orders: OrderProp[]; // Assuming `OrderProp` is an array of order items
   getOrders: () => Promise<OrderProp[]>;
@@ -106,7 +115,7 @@ export interface OrdersStateInterface {
   decrementOrderItemQuantity: (id: string) => ItemProps[];
   depositSplitOrderToStorageById?: any;
   withdrawSplitOrderFromStorageById?: any;
-  refundBill: (bill: BillProp, quantity: number) => Promise<any>;
+  refundBill: (bill: BillProp, quantity: number) => Promise<refundBillResponse | null>;
   deleteGroupOrderItemsById: (id: string) => void;
   createOrder: (data: GroupItemProps[], bill_status?: bill_status_type) => Promise<OrderProp>;
   createSplitBillOrder: any;

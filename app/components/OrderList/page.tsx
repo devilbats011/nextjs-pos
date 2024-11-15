@@ -3,7 +3,7 @@
 "use client";
 
 import useStore from "@/hooks/zustand/useStore";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ItemDeleteButton from "./ItemBillListComponents/ItemDeleteButton";
 import ItemName from "./ItemBillListComponents/ItemName";
 import ItemPrice from "./ItemBillListComponents/ItemPrice";
@@ -18,7 +18,22 @@ import ToasterMessage from "../ToasterMessage";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useErrorHandler from "../InputGroup/hooks/useErrorHandler";
 import Validator from "@/hooks/validator/Validator";
-import { isArrayNotEmpty } from "@/hooks/helper/helper";
+import {
+  fetchWithAuth,
+  isArrayEmpty,
+  isArrayNotEmpty,
+  parseDate,
+  parseIntOrNull,
+} from "@/hooks/helper/helper";
+import {
+  baseUrlOrders,
+  billStatus,
+  billStatusColors,
+} from "@/hooks/helper/constant";
+import { BillRefundDetailProps } from "@/hooks/zustand/interface/backend/bill_refund_detail";
+import Accordion from "../Accordion/page";
+import Breadcrumb from "../Breadcrumb";
+import { pathNameProps } from "@/app/Interface/interface";
 
 const OrderList: React.FC<any> = ({
   ...rest
@@ -34,23 +49,31 @@ const OrderList: React.FC<any> = ({
   const [isHideRefund, setIsHideRefund] = useState(true);
   const [isHideEmail, setIsHideEmail] = useState(true);
   const { inputGroupError, setInputGroupError } = useErrorHandler();
+  const [refreshOrderCount, setRefreshOrderCount] = useState(0);
+
   const [data, setData] = useState({
     email: "",
   });
   const [quantity, setQuantity] = useState(0);
   const [bill, setBill] = useState<BillProp>();
 
-  const { toaster } = useSonnerToast();
+  const { ordersCrumbs } = useStore((state) => state);
 
   useEffect(() => {
-    dataStore.setIsLoading(false);
+    // dataStore.setIsLoading(false);
     (async () => {
+      dataStore.setIsLoading(true);
       const data = (await dataStore.getOrderById(rest.id)) as
         | OrderProp
         | undefined;
       setOrder(data);
+      setTimeout(() => {
+        dataStore.setIsLoading(false);
+      }, 400);
     })();
-  }, []);
+  }, [refreshOrderCount]);
+
+  const { toaster } = useSonnerToast();
 
   function sortedBills() {
     if (!order) {
@@ -79,23 +102,35 @@ const OrderList: React.FC<any> = ({
     return _sortedBills;
   }
 
-  if( !order || order?.bills.length === 0) {
-    return <div className="opacity-80"> ... </div>
+  if (!order || order?.bills.length === 0) {
+    return null;
   }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <Breadcrumb
+        crumbs={[
+          { name: "Orders", href: ordersCrumbs as pathNameProps },
+          { name: "Order Detail", href: "#" },
+        ]}
+      />
+
       <ol className="flex overflow-auto flex-col pt-4 gap-4">
         {order &&
           sortedBills().map((_bill: BillProp, index: any) => {
-            const { item } = _bill;
+            const { item, bill_refund_details } = _bill;
             return (
               <li key={index} className="flex flex-col gap-4 border-b py-4">
                 <div className="flex justify-between items-center ">
-                  <ItemName name={item.name} />
+                  <ItemName
+                    className={"justify-start items-start px-2"}
+                    name={item.name}
+                    bill_refund_details={bill_refund_details}
+                  />
                   <QuantityItem bill={_bill} disableAddRemoveButton={true} />
                   <ItemPrice price={item.price} bill={_bill} />
                   <ItemDeleteButton disableDeleteButton={true} />
+                  {/* @ts-ignore */}
                   <BillStatus bill={_bill} />
                 </div>
                 <ButtonsModels
@@ -114,6 +149,7 @@ const OrderList: React.FC<any> = ({
         setQuantity={setQuantity}
         quantity={quantity}
         bill={bill}
+        setBill={setBill}
         setIsHideRefund={setIsHideRefund}
         isHideRefund={isHideRefund}
         setIsHideEmail={setIsHideEmail}
@@ -123,6 +159,9 @@ const OrderList: React.FC<any> = ({
         data={data}
         setData={setData}
         setInputGroupError={setInputGroupError}
+        setRefreshOrderCount={setRefreshOrderCount}
+        // set_bill_refund_details={set_bill_refund_details}
+        // bill_refund_details={bill_refund_details}
       />
     </div>
   );
@@ -130,11 +169,22 @@ const OrderList: React.FC<any> = ({
 
 export default OrderList;
 
-function BillStatus({ bill }: any) {
+function BillStatus({ bill }: { bill: Partial<{ status: billStatus }> }) {
+  function textColorManager(): string {
+    let classTextColor = "";
+    if (!bill) return classTextColor;
+    if (!bill.status || typeof bill.status != "string") {
+      return classTextColor;
+    }
+    classTextColor = billStatusColors[bill.status];
+    return " " + classTextColor;
+  }
+
   return (
     <div className="w-full text-right">
-      {/* status: */}
-      <span className="uppercase px-2">{bill.status ?? "--"}</span>
+      <span className={"uppercase px-2 font-semibold " + textColorManager()}>
+        {bill.status ?? "--"}
+      </span>
     </div>
   );
 }
@@ -177,36 +227,103 @@ function ButtonsModels({
   quantity: any;
   setQuantity: any;
 }) {
+  const [isOpenRefundDetail, setIsOpenRefundDetail] = useState(false);
+
+  const toggleAccordion = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsOpenRefundDetail(!isOpenRefundDetail);
+  };
+
+  function buttonRefundManager() {
+    if (bill.status == "" || bill.status == "mix" || bill.status == "unpaid")
+      return false;
+
+    if (
+      isArrayNotEmpty(bill.bill_refund_details) &&
+      bill.bill_refund_details?.reduce(
+        (acc, refund) => acc + parseInt(refund.quantity),
+        0
+      ) == bill.item_quantity
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   return (
-    <div className="flex justify-end w-full gap-4 mt-4 mb-6">
-      {(bill.status == "paid" || bill.status == "mix") && (
-        <ButtonSmall
-          color="warning"
-          customStylingWarning={{
-            border: "1px solid #B00020",
-            borderRadius: "2px",
-          }}
-          buttonProps={{
-            onClick: () => {
-              setQuantity(bill.item_quantity);
-              useStateBill.setBill(bill);
-              setIsHideRefund(false);
-            },
-          }}
-        >
-          Refund
-        </ButtonSmall>
+    <>
+      <div className="flex justify-end w-full gap-4 mt-4">
+        {isArrayNotEmpty(bill.bill_refund_details) && (
+          <ButtonSmall
+            color="primary"
+            buttonProps={{
+              type: "button",
+              onClick: toggleAccordion,
+            }}
+          >
+            <div className="flex flex-row gap-2">
+              <div>Refund Detail</div>
+              <div
+                className={`relative transform transition-transform ${
+                  isOpenRefundDetail ? "rotate-180" : ""
+                }`}
+              >
+                ▼
+              </div>
+            </div>
+          </ButtonSmall>
+        )}
+        {buttonRefundManager() ? (
+          <ButtonSmall
+            color="warning"
+            customStylingWarning={{
+              border: "1px solid #B00020",
+              borderRadius: "2px",
+            }}
+            buttonProps={{
+              onClick: () => {
+                setQuantity(bill.item_quantity);
+                useStateBill.setBill(bill);
+                setIsHideRefund(false);
+              },
+            }}
+          >
+            Refund
+          </ButtonSmall>
+        ) : null}
+      </div>
+
+      {isArrayNotEmpty(bill.bill_refund_details) && (
+        <div className="mb-6">
+          <Accordion
+            isOpen={isOpenRefundDetail}
+            setIsOpen={setIsOpenRefundDetail}
+            title="Refund Detail"
+          >
+            {isArrayNotEmpty(bill.bill_refund_details) &&
+              bill.bill_refund_details?.map((refund, index) => {
+                return (
+                  <div className="w-full flex gap-4" key={index}>
+                    <div className="">
+                    # {index + 1}
+                    </div>
+                    <div className="w-max flex gap-1 flex-col">
+                      <p>
+                      {bill.item.name} x {refund.quantity}
+                      </p>
+                    <div className="text-gray-500 italic text-sm space-x-2">
+                      <span>{parseDate(refund.created_at, "date")},</span>
+                      <span>{parseDate(refund.created_at, "time")}</span>
+                    </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </Accordion>
+        </div>
       )}
-      {/* <ButtonSmall
-      buttonProps={{
-      onClick: () => {
-        setIsHideEmail(false);
-      },
-    }}
-      >
-      Send Email
-    </ButtonSmall> */}
-    </div>
+    </>
   );
 }
 
@@ -222,9 +339,12 @@ function Models({
   setInputGroupError,
   quantity,
   setQuantity,
-
+  setBill,
   bill,
-}: {
+  setRefreshOrderCount,
+}: // bill_refund_details,
+// set_bill_refund_details,
+{
   quantity: any;
   setQuantity: any;
   setIsHideRefund: any;
@@ -235,8 +355,12 @@ function Models({
   inputGroupError: any;
   data: any;
   setData: any;
+  setBill: any;
   setInputGroupError: any;
   bill?: BillProp;
+  setRefreshOrderCount: any;
+  // bill_refund_details?: BillRefundDetailProps[];
+  // set_bill_refund_details: any;
 }) {
   const {
     inputGroupError: quantityError,
@@ -248,7 +372,33 @@ function Models({
     setQuantityError("");
   }
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const { ...dataStore } = useStore((state) => state);
+
+  function getQuantityRefunded(bill: BillProp) {
+    if (isArrayEmpty(bill.bill_refund_details)) {
+      return 0;
+    }
+    const quantity = bill.bill_refund_details?.reduce((acc, refund) => {
+      if (!refund.quantity) return acc + 0;
+      const _quantity = parseIntOrNull(refund.quantity) ?? 0;
+      return acc + _quantity;
+    }, 0);
+    return quantity;
+  }
+
+  function maxQuantityManager(bill: BillProp) {
+    if (!bill) {
+      return 0;
+    }
+    // @ts-ignore
+    const resultQuantity = bill.item_quantity - getQuantityRefunded(bill);
+    if (resultQuantity <= 0) {
+      return 0;
+    }
+    return resultQuantity;
+  }
 
   return (
     <>
@@ -274,8 +424,8 @@ function Models({
               onChange: (e) => setQuantity(parseInt(e.target.value)),
               placeholder: "Enter Quantity",
               type: "number",
-              defaultValue: bill ? bill.item_quantity : 0,
-              max: bill ? bill.item_quantity : 1,
+              defaultValue: bill ? maxQuantityManager(bill) : 0,
+              max: bill ? maxQuantityManager(bill) : 1,
               min: 1,
             }}
           >
@@ -287,13 +437,14 @@ function Models({
             color="warning"
             customStylingWarning={{ border: "1px solid #B00020" }}
             buttonProps={{
+              disabled: isLoading,
               onClick: () => {
-                if(!bill) return;
+                if (!bill) return;
                 const validateGetErrors = new Validator()
                   .input(quantity)
                   .required()
                   .number()
-                  .max(bill ? bill.item_quantity : 0)
+                  .max(bill ? maxQuantityManager(bill) : 0)
                   .min(1)
                   .validateGetErrors();
 
@@ -304,10 +455,25 @@ function Models({
                   return setQuantityError(validateGetErrors[0].message);
                 }
                 (async () => {
-                  const updatedBill = await dataStore.refundBill(bill, quantity);
+                  setIsLoading(true);
+                  const billResponse = await dataStore.refundBill(
+                    bill,
+                    quantity
+                  );
+
+                  setIsLoading(false);
+                  if (!billResponse) {
+                    return toaster(
+                      <ToasterMessage> Something Wrong </ToasterMessage>
+                    );
+                  }
+                  setRefreshOrderCount((prev_value: number) => prev_value + 1);
+
+                  // set_bill_refund_details(billResponse.bill_refund_details);
+                  setBill(billResponse.bill);
                   toaster(<ToasterMessage> Refunded! </ToasterMessage>);
                   setIsHideRefund(true);
-                  setQuantityError('');
+                  setQuantityError("");
                   setQuantity(0);
                 })();
               },

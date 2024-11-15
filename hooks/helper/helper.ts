@@ -155,7 +155,8 @@ export function updateObjectArrayById<T>(
  * // Returns false because the array is empty
  * isArrayNotEmpty([]);
  */
-export function isArrayNotEmpty<T>(arr: T[]): boolean {
+export function isArrayNotEmpty<T>(arr: T[] | undefined): boolean {
+  if(!arr) return false;
   return Array.isArray(arr) && arr.length > 0 ? true : false;
 }
 
@@ -173,7 +174,8 @@ export function isArrayNotEmpty<T>(arr: T[]): boolean {
  * // Returns false because the array is not empty
  * isArrayEmpty([1, 2, 3]);
  */
-export function isArrayEmpty<T>(arr: T[]): boolean {
+export function isArrayEmpty<T>(arr: T[] | undefined): boolean {
+  if(!arr) return true;
   return Array.isArray(arr) && arr.length === 0;
 }
 
@@ -206,4 +208,59 @@ export async function fetchWithAuth(
   }
 
   return response;
+}
+
+
+/**
+ * Parses a date string and returns a formatted date or time string.
+ *
+ * @param {string} _date - The date string to be parsed.
+ * @param {'date' | 'time'} [format_mod='date'] - The format modifier, either 'date' or 'time'.
+ *   If 'date', returns the formatted date string as "Sat 19 Oct 2024".
+ *   If 'time', returns the formatted time string as "HH:MM:SS".
+ * 
+ * @returns {string} The formatted date or time string. Returns '-' if the input date is undefined.
+ * 
+ * @example
+ * parseDate('2024-10-19T12:34:56', 'date'); // Returns "Sat 19 Oct 2024"
+ * parseDate('2024-10-19T12:34:56', 'time'); // Returns "12:34:56"
+ */
+export function parseDate( _date: string, format_mod: 'date'| 'time'="date") {
+  if(!_date) {
+    console.warn('undefined date', _date);
+    return '-';
+  }
+
+  const date = new Date(_date);
+
+  // Format as "Sat 19 Oct 2024"
+  const formattedDate = date.toLocaleString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  // Format as "HH:MM:SS"
+  const formattedTime = date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  return format_mod  == 'date' ? formattedDate : formattedTime; 
+
+}
+
+/**
+ * Parses a given string as an integer, or returns null if the input is not a string.
+ *
+ * @param {string | null | undefined} value - The value to parse.
+ * @returns {number | null} The parsed integer, or null if the input is not a string.
+ */
+export function parseIntOrNull(value: any): number | null {
+  if (typeof value !== 'string') return null;
+  const result = parseInt(value);
+  return result;
 }

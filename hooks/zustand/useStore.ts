@@ -16,11 +16,8 @@ export interface useStoreProps
   setSidebarIsOpen: any;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
-  // editCategory: (
-  //   id: number | string,
-  //   updatedItem: Partial<CategoryProps>
-  // ) => Promise<void>;
-  // deleteCategory: (id: number | string) => Promise<void>;
+  ordersCrumbs: string,
+  setOrdersCrumbs: (ordersCrumbs: string) => void;
 }
 
 export default create(
@@ -38,5 +35,8 @@ export default create(
     //* Note: isLoading and setIsLoading uses in LoadingOverlay page ... LoadingOverlay page have z-index 50
     isLoading: false,
     setIsLoading: (isLoading: boolean) => set((state: any) => ({ isLoading })),
+    ordersCrumbs: '/user/orders',    
+    setOrdersCrumbs: (ordersCrumbs: string) => set((state: any) => ({ ordersCrumbs })),
+
   })
 );

@@ -17,8 +17,10 @@ const QuantityItem: React.FC<any> = ({
           className="w-full"
           style={{ marginLeft: "1rem", marginRight: "1rem" }}
         >
-          {" "}
+          <div className="w-max">
           RM {bill.item?.price} x{bill.item_quantity}{" "}
+
+          </div>
         </div>
       );
     }

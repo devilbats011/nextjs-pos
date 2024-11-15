@@ -9,7 +9,6 @@ export default function LoadingOverlay() {
   const { isLoading } = useStore((state) => state);
 
   useEffect(() => {
-    console.log(isLoading, "isLoad!");
   }, [isLoading]);
 
   return (
