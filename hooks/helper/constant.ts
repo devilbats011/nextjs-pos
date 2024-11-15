@@ -1,5 +1,7 @@
 const API_URL = "http://127.0.0.1:8000/api";
 
+export const API_IMG = "http://127.0.0.1:8000/storage";
+
 export default API_URL;
 
 export const baseUrlOrders = API_URL + "/orders";

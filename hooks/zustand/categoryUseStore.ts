@@ -23,9 +23,7 @@ export default function categoryUseStore(
     },
     getCategoryById: async (id: string) => {
       try {
-        const response = await fetch(baseUrl + `/${id}`, {
-          method: "POST",
-        });
+        const response = await fetchWithAuth(baseUrl + `/${id}`);
         if (response.ok) {
           const data = await response.json();
           return data;
@@ -41,7 +39,7 @@ export default function categoryUseStore(
       updatedCategory: Partial<CategoryProps>
     ) => {
       try {
-        const response = await fetch(baseUrl + `/${id}`, {
+        const response = await fetchWithAuth(baseUrl + `/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -88,7 +86,7 @@ export default function categoryUseStore(
     },
     deleteCategoryById: async (id: string) => {
       try {
-        const response = await fetch(baseUrl + `/${id}`, {
+        const response = await fetchWithAuth(baseUrl + `/${id}`, {
           method: "DELETE",
         });
         if (response.ok) {

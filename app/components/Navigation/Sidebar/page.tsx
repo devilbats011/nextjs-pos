@@ -23,6 +23,7 @@ export default function Sidebar() {
   const { toggleSidebar, sidebarIsOpen: isOpen } = useStore((state) => state);
   const router = useRouter();
   const pathSegments = usePathname();
+  const { ...dataStore } = useStore((state) => state);
 
   function sideBarButtonActiveManager(item: itemSidebarProps): string {
     const activeClass =
@@ -85,7 +86,9 @@ export default function Sidebar() {
             className={sideBarButtonActiveManager(item)}
             style={{ border: "1px solid 0" }}
             onClick={() => {
+              dataStore.setIsLoading(true);
               if(item.href) {
+
                 router.push(item.href);
               }
               else if(item.onClick) {

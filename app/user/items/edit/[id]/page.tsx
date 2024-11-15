@@ -37,6 +37,8 @@ export default function Page() {
     setItem,
     selectedColor,
     setSelectedColor,
+    radioValue,
+    setRadioValue
   } = useItem();
   const { toaster } = useSonnerToast();
   const router = useRouter();
@@ -53,10 +55,12 @@ export default function Page() {
 
   useEffect(() => {
     (async () => {
+      dataStore.setIsLoading(true);
       if (typeof id != "string") return;
       const _item = await dataStore.getItemById(id);
       setItem(_item);
       setCategory(categories.find((cat) => cat.id == _item?.category_id));
+      dataStore.setIsLoading(false);
     })();
   }, [categories]);
 
@@ -89,15 +93,20 @@ export default function Page() {
                 <ToasterMessage>Missing Item Price</ToasterMessage>
               );
             }
+            // console.log(item,'?',radioValue);
+            // return;
             setIsEditLoading(true);
+
             const isEdited = await dataStore.editItem(item.id, {
               name: item.name,
               price: item.price,
               quantity: 1,
               category_id: category.id,
-              representation_color: item.representation_color ?? "black",
-              representation_image: item.representation_image ?? null,
-            });
+              representation_color: radioValue == 'color' ? (item.representation_color ?? 'black') : null,
+              representation_image: radioValue == 'image' ? (item.representation_image ?? null) : null,
+            }, radioValue);
+
+            setIsEditLoading(false);
             if (!isEdited) {
               return toaster(<ToasterMessage>Something Wrong</ToasterMessage>);
             }
@@ -158,6 +167,8 @@ export default function Page() {
           defaultColor={item?.representation_color}
           selectedColor={selectedColor}
           setSelectedColor={setSelectedColor}
+          useStateRadioValue={{radioValue, setRadioValue}}
+          useStateItem={{item,setItem}}
         />
         <ButtonBig
           buttonProps={{
@@ -187,6 +198,7 @@ export default function Page() {
           hide: modelDeleteIsHide,
           setHide: setDeleteModelIsHide,
         }}
+
         deleteButtonOnClick={async () => {
           (async () => {
             setDeleteModelIsHide(true);
@@ -207,13 +219,16 @@ export default function Page() {
       />
 
       <SmallModal
+      modalWrapper={{
+        height: '250px',
+      }}
         useStateHide={{
           setHide: setIsHideModalCategory,
           hide: isHideModalCategory,
         }}
       >
         <form
-          className="space-y-4"
+          className="space-y-3"
           onSubmit={(e) => {
             e.preventDefault();
             if (!newCategory)
@@ -239,7 +254,7 @@ export default function Page() {
               required: true,
               placeholder: "Category Name",
               onChange: (e) => {
-                setNewCategory({ name: e.target.value });
+                setNewCategory({ name: e.target.value } as any);
               },
             }}
           >

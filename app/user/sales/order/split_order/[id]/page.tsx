@@ -39,7 +39,9 @@ export default function Page() {
   const { toaster } = useSonnerToast();
 
   useEffect(() => {
-    dataStore.setIsLoading(false);
+    setTimeout(() => {
+      dataStore.setIsLoading(false);
+    }, 300);
   }, []);
 
   useEffect(() => {

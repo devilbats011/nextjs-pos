@@ -195,10 +195,10 @@ export async function fetchWithAuth(
   const token = getCookie(auth_token_name);
 
   options.headers = {
-    ...options.headers,
     Accept: "*/*",
     Authorization: token ? `Bearer ${token}` : "",
     "Content-Type": "application/json",
+    ...options.headers,
   };
 
   const response = await fetch(url, options);
@@ -209,6 +209,38 @@ export async function fetchWithAuth(
 
   return response;
 }
+
+
+export async function fetchWithOnlyAuthHeader(
+  url: string,
+  options: {
+    method: "GET" | "POST" | "PUT" | "DELETE";
+    headers?: any;
+    body?: any;
+  } = {
+    method: "GET",
+    headers: {},
+    body: null,
+  }
+) {
+  // Get the token from cookies
+  const token = getCookie(auth_token_name);
+  options.headers = {
+    Authorization: token ? `Bearer ${token}` : "",
+    ...options.headers,
+  };
+
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  return response;
+}
+
+
+
 
 
 /**
@@ -264,3 +296,12 @@ export function parseIntOrNull(value: any): number | null {
   const result = parseInt(value);
   return result;
 }
+
+
+export const convertToFormData = (item:any): FormData => {
+  const formData = new FormData();
+  for (const key in item) {
+    formData.append(key,item[key]);
+  }
+  return formData;
+};

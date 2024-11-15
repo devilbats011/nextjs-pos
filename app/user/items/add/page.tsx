@@ -34,12 +34,16 @@ export default function Page() {
     item,
     setItem,
     selectedColor,
-    setSelectedColor
+    setSelectedColor,
+    radioValue,
+    setRadioValue
   } = useItem();
   const { toaster } = useSonnerToast();
   const router = useRouter();
 
   const [isAddedLoading, setIsAddedLoading ] = useState(false);
+
+
 
   const {
     inputGroupError: categoryError,
@@ -66,12 +70,16 @@ export default function Page() {
             price: item.price,
             quantity: 1,
             category_id: category.id,
-            representation_color: item.representation_color ?? 'black',
-            representation_image: item.representation_image ?? null,
-          });
+            representation_color: radioValue == 'color' ? (item.representation_color ?? 'black') : null,
+            representation_image: radioValue == 'image' ? (item.representation_image ?? null) : null,
+          }, radioValue);
+
+          setIsAddedLoading(false);
+
           if (!isAdded) {
             return toaster(<ToasterMessage>Something Wrong</ToasterMessage>);
           }
+
           toaster(<ToasterMessage>Item Added</ToasterMessage>);
           setTimeout(() => {
             router.push("/user/items/list");
@@ -125,11 +133,12 @@ export default function Page() {
           },
         ]}
       />
-
       <div className="py-4">
         <ItemRepresentation 
           selectedColor={selectedColor}
           setSelectedColor={setSelectedColor}
+          useStateRadioValue={{radioValue, setRadioValue}}
+          useStateItem={{item,setItem}}
         />
       </div>
 
@@ -143,6 +152,7 @@ export default function Page() {
           }}
         >
           + Add Item
+
         </ButtonBig>
       </div>
         <SmallModal
@@ -178,7 +188,7 @@ export default function Page() {
                 required: true,
                 placeholder: "Category Name",
                 onChange: (e) => {
-                  setNewCategory({ name: e.target.value });
+                  setNewCategory({ name: e.target.value } as any);
                 },
               }}
             >

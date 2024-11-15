@@ -14,6 +14,7 @@ export default function useItem() {
   const [category, setCategory] = useState<CategoryProps>();
   const [item, setItem] = useState<Partial<ItemProps> | undefined | null>();
   const [selectedColor, _setSelectedColor] = useState<string | null>(null);
+  const [radioValue, setRadioValue] = useState<'color'| 'image'>("color");
 
   useEffect(() => {
     getCategory().then((data: any) => {
@@ -43,6 +44,8 @@ export default function useItem() {
     item,
     setItem,
     selectedColor,
-    setSelectedColor
+    setSelectedColor,
+    radioValue,
+    setRadioValue
   };
 }

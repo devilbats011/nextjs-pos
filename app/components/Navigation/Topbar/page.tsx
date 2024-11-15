@@ -25,7 +25,7 @@ export default function Topbar() {
 
   return (
     <nav className={styles.topMenu}>
-      <div className="flex gap-4 justify-center items-center">
+      <div className="pl-1 flex gap-4 justify-center items-center">
         <div className={styles.logo} onClick={toggleSidebar}>
           ☰
         </div>

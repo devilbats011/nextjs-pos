@@ -26,6 +26,7 @@ export default function SalesPage() {
     getCategory,
     orderItems,
     items: useStoreItems,
+    setIsLoading,
   } = useStore((state) => state);
   const { toaster } = useSonnerToast();
   const router = useRouter();
@@ -41,6 +42,9 @@ export default function SalesPage() {
   useEffect(() => {
     (async () => {
       await fetchItems();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 400);
     })();
   }, []);
 
@@ -51,35 +55,38 @@ export default function SalesPage() {
   }, [getCategory]);
 
   return (
+    <section className="flex flex-col gap-4">
+      <Breadcrumb crumbs={[{ name: "Sales", href: "#" }]} />
+      <hr />
+      <ButtonBig
+        buttonProps={{
+          onClick: () => {
+            const pathName: pathNameProps = "/user/sales/order";
+            router.push(pathName);
+          },
+          disabled: isArrayNotEmpty(getOrderItems()) ? false : true,
+        }}
+      >
+        <div className="flex flex-col text-base">
+          <div>Charged</div>
+          <div> {formatPrice(getTotalOrderItemsPrice())} </div>
+        </div>
+      </ButtonBig>
 
-      <section className="flex flex-col gap-4">
-        <Breadcrumb crumbs={[{ name: "Sales", href: "#" }]} />
-        <hr />
-        <ButtonBig
-        
-        buttonProps={{onClick: () => {
-          const pathName: pathNameProps = "/user/sales/order";
-          router.push(pathName);
-        },
-      disabled: isArrayNotEmpty(getOrderItems()) ? false : true
-      }}
-        >
-          <div className="flex flex-col text-base">
-            <div>Charged</div>
-            <div> {formatPrice(getTotalOrderItemsPrice())} </div>
-          </div>
-        </ButtonBig>
-
-        <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {itemsUseStore && itemsUseStore.length > 0 ? (
-          <SearchItem items={useStoreItems} itemOnClick={searchItemOnClick} useStateCategories={{categories, setCategories}} />
-        ) : (<>
+          <SearchItem
+            items={useStoreItems}
+            itemOnClick={searchItemOnClick}
+            useStateCategories={{ categories, setCategories }}
+          />
+        ) : (
+          <>
             <Header1> Items </Header1>
             <div className="text-center text-gray-400 text-xl">No Items...</div>
-        </>
+          </>
         )}
-        </div>
-
-      </section>
+      </div>
+    </section>
   );
 }

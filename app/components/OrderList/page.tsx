@@ -3,7 +3,7 @@
 "use client";
 
 import useStore from "@/hooks/zustand/useStore";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ItemDeleteButton from "./ItemBillListComponents/ItemDeleteButton";
 import ItemName from "./ItemBillListComponents/ItemName";
 import ItemPrice from "./ItemBillListComponents/ItemPrice";
@@ -19,21 +19,18 @@ import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useErrorHandler from "../InputGroup/hooks/useErrorHandler";
 import Validator from "@/hooks/validator/Validator";
 import {
-  fetchWithAuth,
   isArrayEmpty,
   isArrayNotEmpty,
   parseDate,
   parseIntOrNull,
 } from "@/hooks/helper/helper";
 import {
-  baseUrlOrders,
   billStatus,
-  billStatusColors,
 } from "@/hooks/helper/constant";
-import { BillRefundDetailProps } from "@/hooks/zustand/interface/backend/bill_refund_detail";
 import Accordion from "../Accordion/page";
 import Breadcrumb from "../Breadcrumb";
 import { pathNameProps } from "@/app/Interface/interface";
+import { useRouter } from "next/navigation";
 
 const OrderList: React.FC<any> = ({
   ...rest
@@ -131,7 +128,7 @@ const OrderList: React.FC<any> = ({
                   <ItemPrice price={item.price} bill={_bill} />
                   <ItemDeleteButton disableDeleteButton={true} />
                   {/* @ts-ignore */}
-                  <BillStatus bill={_bill} />
+                  <BillStatus bill={_bill} order={order} />
                 </div>
                 <ButtonsModels
                   quantity={quantity}
@@ -169,22 +166,54 @@ const OrderList: React.FC<any> = ({
 
 export default OrderList;
 
-function BillStatus({ bill }: { bill: Partial<{ status: billStatus }> }) {
+function BillStatus({
+  bill,
+  order,
+}: {
+  bill: Partial<BillProp>;
+  order: OrderProp;
+}) {
+  const router = useRouter();
+
+  const { setIsLoading } = useStore((state) => state);
   function textColorManager(): string {
     let classTextColor = "";
     if (!bill) return classTextColor;
     if (!bill.status || typeof bill.status != "string") {
       return classTextColor;
     }
-    classTextColor = billStatusColors[bill.status];
+
+    const _billStatusColors: Record<string, string> = {
+      unpaid: "text-orange-500", // Orange for unpaid bills
+      paid: "text-green-500", // Green for paid bills
+      refund: "text-blue-500", // Blue for refunded bills
+      mix: "text-yellow-500", // Yellow for mixed status bills
+    };
+
+    classTextColor = _billStatusColors[bill.status as billStatus];
     return " " + classTextColor;
   }
 
   return (
     <div className="w-full text-right">
-      <span className={"uppercase px-2 font-semibold " + textColorManager()}>
-        {bill.status ?? "--"}
-      </span>
+      {bill.status == "unpaid" ? (
+        <button
+          type="button"
+          onClick={(event) => {
+            setIsLoading(true);
+            router.push("/user/sales/order/split_order/" + order.id);
+          }}
+          className={
+            "hover:font-extrabold transition-all uppercase px-2 font-semibold  text-orange-500"
+          }
+        >
+          {bill.status ?? "--"}
+        </button>
+      ) : (
+        <span className={"uppercase px-2 font-semibold " + textColorManager()}>
+          {bill.status ?? "--"}
+        </span>
+      )}
     </div>
   );
 }
@@ -305,17 +334,15 @@ function ButtonsModels({
               bill.bill_refund_details?.map((refund, index) => {
                 return (
                   <div className="w-full flex gap-4" key={index}>
-                    <div className="">
-                    # {index + 1}
-                    </div>
+                    <div className=""># {index + 1}</div>
                     <div className="w-max flex gap-1 flex-col">
                       <p>
-                      {bill.item.name} x {refund.quantity}
+                        {bill.item.name} x {refund.quantity}
                       </p>
-                    <div className="text-gray-500 italic text-sm space-x-2">
-                      <span>{parseDate(refund.created_at, "date")},</span>
-                      <span>{parseDate(refund.created_at, "time")}</span>
-                    </div>
+                      <div className="text-gray-500 italic text-sm space-x-2">
+                        <span>{parseDate(refund.created_at, "date")},</span>
+                        <span>{parseDate(refund.created_at, "time")}</span>
+                      </div>
                     </div>
                   </div>
                 );

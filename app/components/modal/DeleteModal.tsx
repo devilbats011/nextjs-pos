@@ -5,15 +5,15 @@ import ButtonSmall from "../Buttons/ButtonSmall";
 
 export default function DeleteModal({
   deleteButtonOnClick: deleteOnClick,
+  modalWrapper= {
+    width: "300px",
+    height: "220px",
+  },
   ...props
 }: DeleteModalProps) {
   return (
     <Modal
-      modalWrapper={{
-        width: "300px",
-        height: "200px",
-        ...props.modalWrapper,
-      }}
+      modalWrapper={modalWrapper}
       headerModalProps={{ style: { color: "red" }, ...props.headerModalProps }}
       {...props}
     >

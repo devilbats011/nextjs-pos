@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import API_URL from "../helper/constant";
-import { fetchWithAuth } from "../helper/helper";
+import {
+  convertToFormData,
+  fetchWithAuth,
+  fetchWithOnlyAuthHeader,
+} from "../helper/helper";
 import { ItemProps, itemsUseStoreProps } from "./interface/item";
 
 export default function itemsUseStore(
@@ -36,16 +40,26 @@ export default function itemsUseStore(
         console.error("Error fetching items:", error);
       }
     },
-    // Add new item (Create)
-    addItem: async (newItem: ItemProps) => {
+    addItem: async (
+      newItem: ItemProps,
+      representation_mod: "color" | "image" = "color"
+    ) => {
       try {
-        const response = await fetchWithAuth(baseUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newItem),
-        });
+        let body = null;
+        let response;
+        if (representation_mod == "color") {
+          body = JSON.stringify(newItem);
+          response = await fetchWithAuth(baseUrl, {
+            method: "POST",
+            body,
+          });
+        } else {
+          body = convertToFormData(newItem);
+          response = await fetchWithOnlyAuthHeader(baseUrl, {
+            method: "POST",
+            body,
+          });
+        }
 
         if (response.ok) {
           const addedItem = await response.json();
@@ -62,15 +76,37 @@ export default function itemsUseStore(
     },
 
     // Update existing item (Update)
-    editItem: async (id: number | string, updatedItem: Partial<ItemProps>) => {
+    editItem: async (
+      id: number | string,
+      updatedItem: Partial<ItemProps>,
+      representation_mod: "color" | "image"
+    ) => {
       try {
-        const response = await fetchWithAuth(`${baseUrl}/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedItem),
-        });
+        let body = null;
+        let response;
+        if (representation_mod == "color") {
+          body = JSON.stringify(updatedItem);
+          response = await fetchWithAuth(`${baseUrl}/${id}`, {
+            method: "POST",
+            body,
+          });
+        } else {
+          body = convertToFormData(updatedItem);
+          // console.log(body.get('representation_image'));
+          // return;
+          response = await fetchWithOnlyAuthHeader(`${baseUrl}/${id}`, {
+            method: "POST",
+            body,
+          });
+        }
+
+        // response = await fetchWithAuth(`${baseUrl}/${id}`, {
+        //   method: "PUT",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(updatedItem),
+        // });
 
         if (response.ok) {
           const updated = await response.json();

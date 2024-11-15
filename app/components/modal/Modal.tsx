@@ -38,9 +38,9 @@ export default function Modal({
 
       <div
         style={{
-          ...modalWrapper,
           width: "60%",
           height: "400px",
+          ...modalWrapper,
         }}
       >
         <div style={styles.modal}>
@@ -90,7 +90,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "15px",
   },
   modalOverlay: {
-    position: "absolute",
+    position: "fixed",
     top: 0,
     left: 0,
     width: "100%",

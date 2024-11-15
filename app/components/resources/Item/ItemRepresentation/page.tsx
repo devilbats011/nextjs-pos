@@ -4,14 +4,17 @@ import InputSelectImage from "./InputSelectImage";
 
 export default function ItemRepresentation({ defaultColor = "red",
   setSelectedColor = () => {},
-  selectedColor = 'black'
+  selectedColor = 'black',
+  useStateRadioValue,
+  useStateItem,
  }: { defaultColor?: string | undefined | null ;
-
+  useStateRadioValue: {radioValue: any, setRadioValue: any};
   selectedColor?: string | null;
   setSelectedColor?: (color: string)=> void;
+  useStateItem:{item: any, setItem: any};
 
  }) {
-  const [radioValue, setRadioValue] = useState<string | number>("1");
+
 
   useEffect(() => {
     if(defaultColor) {
@@ -19,9 +22,11 @@ export default function ItemRepresentation({ defaultColor = "red",
     }
   }, [defaultColor]);
 
+  
+
   function onChangeRadio(event: React.ChangeEvent<HTMLInputElement>) {
     console.log(event.target.value);
-    setRadioValue(event.target.value);
+    useStateRadioValue.setRadioValue(event.target.value);
   }
 
   return (
@@ -37,7 +42,7 @@ export default function ItemRepresentation({ defaultColor = "red",
         <input
           type="radio"
           name="a"
-          value={"1"}
+          value={"color"}
           id="1"
           defaultChecked
           onChange={onChangeRadio}
@@ -46,7 +51,7 @@ export default function ItemRepresentation({ defaultColor = "red",
           Color
         </label>
       </section>
-      {radioValue == 1 && (
+      {useStateRadioValue.radioValue == 'color' && (
         <InputSelectColor
           selectedColor={selectedColor}
           setSelectedColor={setSelectedColor}
@@ -56,7 +61,7 @@ export default function ItemRepresentation({ defaultColor = "red",
         <input
           type="radio"
           name="a"
-          value={"2"}
+          value={"image"}
           id="2"
           onChange={onChangeRadio}
         />
@@ -64,8 +69,7 @@ export default function ItemRepresentation({ defaultColor = "red",
           Image
         </label>
       </section>
-
-      {radioValue == 2 && <InputSelectImage />}
+      {useStateRadioValue.radioValue == 'image' && <InputSelectImage  useStateItem={useStateItem} />}
     </div>
   );
 }

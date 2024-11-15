@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { billStatus } from "@/hooks/helper/constant";
 import { BillProps } from "./backend/bill";
 import { BillRefundDetailProps } from "./backend/bill_refund_detail";
-
-
 
 export interface ItemProps {
   id?: string;
@@ -15,7 +14,7 @@ export interface ItemProps {
   updated_at?: string;
   created_at?: string;
   representation_color?: string | null | undefined;
-  representation_image?: string | null | undefined;
+  representation_image?: any;
 }
 export interface GroupItemProps {
   id: string;
@@ -29,10 +28,14 @@ export interface itemsUseStoreProps {
   items: ItemProps[];
   getItems: () => Promise<any>;
   fetchItems: () => Promise<any>;
-  addItem: (item: ItemProps) => Promise<boolean>;
+  addItem: (
+    item: ItemProps,
+    representation_mod: "color" | "image"
+  ) => Promise<boolean>;
   editItem: (
     id: number | string,
-    updatedItem: Partial<ItemProps>
+    updatedItem: Partial<ItemProps>,
+    representation_mod: "color" | "image"
   ) => Promise<boolean>;
   deleteItemById: (id: number | string) => Promise<boolean>;
   getItemById: (id: string) => Promise<ItemProps | null>;
@@ -50,7 +53,7 @@ export interface BillProp {
   item_id: string;
   order_id: string;
   item_quantity: number;
-  status: string;
+  status: billStatus | string;
   created_at: string;
   updated_at: string;
   refund_id: string | null;
@@ -74,15 +77,14 @@ export interface splitOrderItemsProps {
   price: number;
   sumPrice: number;
   bill_id: string;
-
 }
 
 export interface SplitOrderProps {
   splitOrderItems: splitOrderItemsProps[];
   totalSumPrice: number;
   id: string;
-  isPaid: boolean,
-  quantity_paid: number,
+  isPaid: boolean;
+  quantity_paid: number;
 }
 
 export interface SplitOrderStorage {
@@ -92,17 +94,20 @@ export interface SplitOrderStorage {
 
 export type SplitOrders = SplitOrderProps[];
 
-export type bill_status_type = 'unpaid' | 'paid' | 'refund' | 'mix';
+export type bill_status_type = "unpaid" | "paid" | "refund" | "mix";
 
 export interface refundBillResponse {
-  bill: BillProps,
-  bill_refund_details: BillRefundDetailProps[],
+  bill: BillProps;
+  bill_refund_details: BillRefundDetailProps[];
 }
 
 export interface OrdersStateInterface {
   orders: OrderProp[]; // Assuming `OrderProp` is an array of order items
   getOrders: () => Promise<OrderProp[]>;
-  getOrdersByChunks: (chunks: number, number_of_item_per_chunk: number) => Promise<OrderProp[] | null>;
+  getOrdersByChunks: (
+    chunks: number,
+    number_of_item_per_chunk: number
+  ) => Promise<OrderProp[] | null>;
   getOrderById: (id: string) => Promise<OrderProp | undefined>; // Returns a promise with a single order or undefined
   orderItems: any[];
   setOrderItems: any;
@@ -115,11 +120,17 @@ export interface OrdersStateInterface {
   decrementOrderItemQuantity: (id: string) => ItemProps[];
   depositSplitOrderToStorageById?: any;
   withdrawSplitOrderFromStorageById?: any;
-  refundBill: (bill: BillProp, quantity: number) => Promise<refundBillResponse | null>;
+  refundBill: (
+    bill: BillProp,
+    quantity: number
+  ) => Promise<refundBillResponse | null>;
   deleteGroupOrderItemsById: (id: string) => void;
-  createOrder: (data: GroupItemProps[], bill_status?: bill_status_type) => Promise<OrderProp>;
+  createOrder: (
+    data: GroupItemProps[],
+    bill_status?: bill_status_type
+  ) => Promise<OrderProp>;
   createSplitBillOrder: any;
-  isOrderItemsEmpty:() => boolean;
-  totalQuantitySplitOrderPage: number,
-  setTotalQuantitySplitOrderPage: (value: number)=>any,
+  isOrderItemsEmpty: () => boolean;
+  totalQuantitySplitOrderPage: number;
+  setTotalQuantitySplitOrderPage: (value: number) => any;
 }

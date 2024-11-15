@@ -2,9 +2,25 @@
 
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import Header1 from "@/app/components/Headers/Header1";
+import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Page() {
+  const { ...dataStore } = useStore((state) => state);
+
+  useEffect(() => {
+    setTimeout(() => {
+      dataStore.setIsLoading(false);
+    }, 400);
+    return () => {
+
+    }
+  }, [])
+  
+ 
+
+
   const router = useRouter();
 
   return (
