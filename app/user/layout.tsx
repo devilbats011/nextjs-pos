@@ -1,5 +1,5 @@
 import Sidebar from "../components/Navigation/Sidebar/page";
-import Topbar from "../components/Navigation/Topbar/page";
+import Topbar from "../components/Navigation/Topbar/Topbar";
 import LoadingOverlay from "../components/Overlay/LoadingOverlay";
 
 export default async function Layout({

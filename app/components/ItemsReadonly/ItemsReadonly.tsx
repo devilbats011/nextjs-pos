@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-// import useStore from "@/hooks/zustand/useStore";
 import ItemName from "./ItemsReadonlyComponents/ItemName";
 import ItemPrice from "./ItemsReadonlyComponents/ItemPrice";
 import ItemRepresentative from "./ItemsReadonlyComponents/ItemRepresentative";
@@ -28,8 +27,7 @@ export default function ItemsReadonly({
     if (!items || items.length == 0) {
       return (
         <li key={0} className="text-center p-8 text-gray-400 text-xl">
-          {" "}
-          No Items..{" "}
+          No Items..
         </li>
       );
     }

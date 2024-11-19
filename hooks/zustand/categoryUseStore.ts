@@ -61,7 +61,7 @@ export default function categoryUseStore(
         return false;
       }
     },
-    addCategory: async (newCategory: CategoryProps) => {
+    addCategory: async (newCategory: Partial<CategoryProps>) => {
       try {
         const response = await fetchWithAuth(baseUrl, {
           method: "POST",

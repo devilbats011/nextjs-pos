@@ -32,9 +32,9 @@ import {
 import Breadcrumb from "../Breadcrumb";
 import { pathNameProps } from "@/app/Interface/interface";
 import { useRouter } from "next/navigation";
-import Accordian from "../Accordion/accordian";
+import Accordian from "../Accordion/Accordian";
 
-const OrderList: React.FC<any> = ({
+const OrderListMain: React.FC<any> = ({
   ...rest
 }: {
   id: any;
@@ -165,7 +165,7 @@ const OrderList: React.FC<any> = ({
   );
 };
 
-export default OrderList;
+export default OrderListMain;
 
 function BillStatus({
   bill,

@@ -4,7 +4,7 @@
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import Header1 from "@/app/components/Headers/Header1";
-import SearchItem from "@/app/components/SearchItem/page";
+import SearchItem from "@/app/components/SearchItem/SearchItem";
 
 import ToasterMessage from "@/app/components/ToasterMessage";
 import { formatPrice, isArrayNotEmpty } from "@/hooks/helper/helper";

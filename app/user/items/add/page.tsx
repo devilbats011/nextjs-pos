@@ -9,7 +9,7 @@ import Dropdown from "@/app/components/Dropdown/Dropdown";
 import useErrorHandler from "@/app/components/InputGroup/hooks/useErrorHandler";
 import InputGroupText from "@/app/components/InputGroup/InputGroupText";
 import SmallModal from "@/app/components/modal/SmallModal";
-import ItemRepresentation from "@/app/components/resources/Item/ItemRepresentation/page";
+import ItemRepresentation from "@/app/components/resources/Item/ItemRepresentation/ItemRepresentation";
 import ToasterMessage from "@/app/components/ToasterMessage";
 import useItem from "@/hooks/item/useItem";
 import { useSonnerToast } from "@/hooks/useSonnerToast";

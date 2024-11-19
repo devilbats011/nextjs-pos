@@ -3,7 +3,7 @@
 
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
-import ItemsReadonly from "@/app/components/ItemsReadonly/page";
+import ItemsReadonly from "@/app/components/ItemsReadonly/ItemsReadonly";
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

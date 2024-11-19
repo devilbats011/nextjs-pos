@@ -10,7 +10,7 @@ import { CategoryProps } from "./backend/category";
 export interface categoryUseStoreInterface {
   category: CategoryProps[];
   getCategory: () => Promise<any>;
-  addCategory: (item: CategoryProps) => Promise<boolean>;
+  addCategory: (item: Partial<CategoryProps>) => Promise<boolean>;
   getCategoryById: (id: string) => Promise<CategoryProps | null>;
   // fetchItems: () => Promise<void>;
   editCategoryById: (

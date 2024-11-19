@@ -4,7 +4,7 @@
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import Header1 from "@/app/components/Headers/Header1";
-import ItemsReadonly from "@/app/components/ItemsReadonly/page";
+import ItemsReadonly from "@/app/components/ItemsReadonly/ItemsReadonly";
 import ToasterMessage from "@/app/components/ToasterMessage";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useStore from "@/hooks/zustand/useStore";

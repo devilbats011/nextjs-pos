@@ -2,7 +2,7 @@
 
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
-import ItemList from "@/app/components/ItemList/page";
+import ItemList from "@/app/components/ItemList/ItemList";
 import ToasterMessage from "@/app/components/ToasterMessage";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useStore from "@/hooks/zustand/useStore";

@@ -1,5 +1,4 @@
-
-import OrderList from "@/app/components/OrderList/page";
+import OrderListMain from "@/app/components/OrderList/OrderListMain"
 
 export default async function Page({
   params,
@@ -8,6 +7,6 @@ export default async function Page({
 }) {
   const id = (await params).id
   return <>
-      <OrderList id={id} />
+      <OrderListMain id={id} />
     </>
 }

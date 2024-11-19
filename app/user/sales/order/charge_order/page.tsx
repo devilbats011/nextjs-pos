@@ -4,7 +4,7 @@ import Breadcrumb from "@/app/components/Breadcrumb";
 // import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import useErrorHandler from "@/app/components/InputGroup/hooks/useErrorHandler";
-import ItemList from "@/app/components/ItemList/page";
+import ItemList from "@/app/components/ItemList/ItemList";
 import ToasterMessage from "@/app/components/ToasterMessage";
 import { isArrayNotEmpty } from "@/hooks/helper/helper";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
