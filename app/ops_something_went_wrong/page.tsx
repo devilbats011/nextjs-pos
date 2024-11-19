@@ -8,6 +8,8 @@ const page = () => {
       <div className="border border-black rounded p-8 max-w-md w-full">
         <div className="flex flex-col items-center">
           <Image
+            width={260}
+            height={260}
             src="https://i.imgflip.com/58eyvu.png?a480816"
             alt="Ops Error"
             className="w-full mb-4"

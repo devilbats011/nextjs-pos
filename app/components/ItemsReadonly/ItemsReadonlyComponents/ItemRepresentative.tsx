@@ -31,11 +31,14 @@ const ItemRepresentative: React.FC<any> = ({
         ></div>
       ) : 
       <Image
+      width={36}
+      height={36}
+      
       src={API_IMG + "/" + item.representation_image}
       alt={item.name}
       style={{
-        width: "36px",
-        height: "36px",
+        // width: "36px",
+        // height: "36px",
         display: "inline-block",
       }}
     />

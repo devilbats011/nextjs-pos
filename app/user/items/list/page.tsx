@@ -6,7 +6,7 @@ import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import ItemsReadonly from "@/app/components/ItemsReadonly/ItemsReadonly";
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function Page() {
   }
 
   return (
-    <>
+    <Suspense>
       <div className="flex flex-col gap-4">
         <Breadcrumb
           crumbs={[
@@ -48,6 +48,6 @@ export default function Page() {
         {false && <ButtonBig> Show More </ButtonBig>}
 
       </div>
-    </>
+    </Suspense>
   );
 }

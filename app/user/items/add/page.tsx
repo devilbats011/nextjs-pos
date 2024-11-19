@@ -17,7 +17,7 @@ import { CategoryProps } from "@/hooks/zustand/interface/backend/category";
 import { ItemProps } from "@/hooks/zustand/interface/item";
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function Page() {
   const { ...dataStore } = useStore((state) => state);
@@ -52,6 +52,7 @@ export default function Page() {
   } = useErrorHandler();
 
   return (
+    <Suspense>
     <form
       className="flex flex-col gap-4"
       onSubmit={(e) => {
@@ -206,5 +207,6 @@ export default function Page() {
           </form>
         </SmallModal>
     </form>
+    </Suspense>
   );
 }

@@ -9,7 +9,7 @@ import ToasterMessage from "@/app/components/ToasterMessage";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import useStore from "@/hooks/zustand/useStore";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function Page() {
   const { ...dataStore } = useStore((state) => state);
@@ -28,6 +28,7 @@ export default function Page() {
   }, [""]);
 
   return (
+    <Suspense>
     <div className="flex flex-col gap-4">
       <Breadcrumb
         containerProps={{ className: "my-4" }}
@@ -63,5 +64,6 @@ export default function Page() {
         />
       </div>
     </div>
+    </Suspense>
   );
 }
