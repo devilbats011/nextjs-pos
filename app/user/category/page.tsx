@@ -24,6 +24,7 @@ export default function Page() {
     if (toast) {
       toaster(<ToasterMessage> {toast} </ToasterMessage>);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [""]);
 
   return (

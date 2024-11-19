@@ -1,5 +1,6 @@
 import React, { SVGProps } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Trash = (props?: SVGProps<SVGSVGElement>) => (
   <svg
     width="24"

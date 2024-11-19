@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { CategoryProps } from "@/hooks/zustand/interface/backend/category";
-import { isArrayNotEmpty, updateObjectArray } from "@/hooks/helper/helper";
+import { isArrayNotEmpty } from "@/hooks/helper/helper";
 import ItemRepresentative from "../ItemsReadonly/ItemsReadonlyComponents/ItemRepresentative";
 import ItemName from "../ItemList/ItemListComponents/ItemName";
 import ItemPrice from "../ItemList/ItemListComponents/ItemPrice";
@@ -26,7 +28,6 @@ const SearchItem: React.FC<SearchItemProps> = ({
   containerStyle = undefined,
   inputSearchStyle = undefined,
   listItemStyle = undefined,
-  itemStyle = undefined,
   itemOnClick = undefined,
   useStateCategories,
 }) => {

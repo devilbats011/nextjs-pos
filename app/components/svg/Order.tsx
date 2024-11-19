@@ -1,11 +1,4 @@
-export default function Order({
-  isButtonActive = false,
-}: {
-  isButtonActive?: boolean;
-}) {
-  function isBtnActiveManager(): string {
-    return isButtonActive ? "#191A2C" : "white";
-  }
+export default function Order() {
 
   return (
     <svg

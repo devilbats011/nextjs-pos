@@ -4,18 +4,17 @@ import useStore from "@/hooks/zustand/useStore";
 import { useEffect, useState } from "react";
 import ItemAdd from "./ItemListComponents/ItemAddRemoveButton/ItemAdd";
 import ItemRemove from "./ItemListComponents/ItemAddRemoveButton/ItemRemove";
-import ItemCheckboxInput from "./ItemListComponents/ItemCheckboxInput";
 import ItemDeleteButton from "./ItemListComponents/ItemDeleteButton";
 import ItemName from "./ItemListComponents/ItemName";
 import ItemPrice from "./ItemListComponents/ItemPrice";
 import TotalItems from "./ItemListComponents/TotalItems";
 import QuantityItem from "./ItemListComponents/QuantityItem";
-import { GroupItemProps, ItemProps } from "@/hooks/zustand/interface/item";
+import { GroupItemProps } from "@/hooks/zustand/interface/item";
 
 const ItemList: React.FC = ({
   ...rest
 }: {
-  disableCheckbox?: boolean | undefined | Boolean;
+  disableCheckbox?: boolean | undefined | boolean;
   disableAddRemoveButton?: boolean;
   disableDeleteButton?: boolean;
   disableTotalItems?: boolean;
@@ -30,6 +29,7 @@ const ItemList: React.FC = ({
     } else {
       set_items(rest.items);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

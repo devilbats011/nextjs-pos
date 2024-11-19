@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ModalProps } from "./interface";
 
@@ -12,11 +13,11 @@ export default function Modal({
   modalWrapper,
   children,
 }: ModalProps) {
-  const router = useRouter();
 
   const [_hide, _setHide] = useState(isHide);
 
   function setHideManager(value: boolean): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     useStateHide ? useStateHide.setHide(value) : _setHide(value);
   }
 

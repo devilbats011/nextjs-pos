@@ -4,26 +4,22 @@ import Breadcrumb from "@/app/components/Breadcrumb";
 // import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import useErrorHandler from "@/app/components/InputGroup/hooks/useErrorHandler";
-import InputGroupText from "@/app/components/InputGroup/InputGroupText";
 import ItemList from "@/app/components/ItemList/page";
 import ToasterMessage from "@/app/components/ToasterMessage";
-import { baseUrlOrders } from "@/hooks/helper/constant";
 import { isArrayNotEmpty } from "@/hooks/helper/helper";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import Validator from "@/hooks/validator/Validator";
-import { ItemProps } from "@/hooks/zustand/interface/item";
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export default function Page() {
   const { ...dataStore } = useStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
-  const { inputGroupError, setInputGroupError } = useErrorHandler();
+  const { setInputGroupError } = useErrorHandler();
   const router = useRouter();
 
-  const [inputText, setInputText] = useState<string>();
+  const [inputText] = useState<string>();
   const { toaster } = useSonnerToast();
 
   useEffect(() => {

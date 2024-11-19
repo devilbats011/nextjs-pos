@@ -11,7 +11,6 @@ import { formatPrice, isArrayNotEmpty } from "@/hooks/helper/helper";
 import { pathNameProps } from "@/app/Interface/interface";
 import { useSonnerToast } from "@/hooks/useSonnerToast";
 import { CategoryProps } from "@/hooks/zustand/interface/backend/category";
-import { ItemProps } from "@/hooks/zustand/interface/item";
 import itemsUseStore from "@/hooks/zustand/itemsUseStore";
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";
@@ -24,7 +23,6 @@ export default function SalesPage() {
     getOrderItems,
     getTotalOrderItemsPrice,
     getCategory,
-    orderItems,
     items: useStoreItems,
     setIsLoading,
   } = useStore((state) => state);

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import Breadcrumb from "@/app/components/Breadcrumb";
 import ButtonBig from "@/app/components/Buttons/ButtonBig";
 import ButtonSmall from "@/app/components/Buttons/ButtonSmall";
-import Dropdown from "@/app/components/Dropdown/page";
+import Dropdown from "@/app/components/Dropdown/Dropdown";
 import useErrorHandler from "@/app/components/InputGroup/hooks/useErrorHandler";
 import InputGroupText from "@/app/components/InputGroup/InputGroupText";
 import DeleteModal from "@/app/components/modal/DeleteModal";

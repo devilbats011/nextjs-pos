@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { useEffect } from "react";
 import InputSelectColor from "./InputSelectColor";
 import InputSelectImage from "./InputSelectImage";
 

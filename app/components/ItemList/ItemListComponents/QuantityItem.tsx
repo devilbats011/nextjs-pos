@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatPrice } from "@/hooks/helper/helper";
-import React, { useState } from "react";
+import React from "react";
 
 const QuantityItem: React.FC<any> = ({ item, ...rest }) => {
   if (rest.disableAddRemoveButton) {

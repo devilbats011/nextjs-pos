@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setCookie } from "cookies-next";
 import ButtonSmall from "../components/Buttons/ButtonSmall";
-import API_URL, { auth_token_name } from "@/hooks/helper/constant";
+import API_URL from "@/hooks/helper/constant";
 import Validator, { validateMessagesI } from "@/hooks/validator/Validator";
 import { isArrayNotEmpty } from "@/hooks/helper/helper";
 

@@ -1,22 +1,20 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
 
-interface AccordionProps {
-  title: string;
-  children?: React.ReactNode;
-  isOpen: boolean;
-  setIsOpen?: any;
-}
-
-const Accordion: React.FC<AccordionProps> = ({
+export default function Accordian({
   title,
   children,
   isOpen = false,
   setIsOpen,
-}) => {
-
+}: {
+  title: string;
+  children?: React.ReactNode;
+  isOpen: boolean;
+  setIsOpen?: any;
+}) {
   const toggleAccordion = () => {
-    if(setIsOpen) {
-        setIsOpen(!isOpen);
+    if (setIsOpen) {
+      setIsOpen(!isOpen);
     }
   };
 
@@ -27,15 +25,12 @@ const Accordion: React.FC<AccordionProps> = ({
         className="w-full flex justify-between items-center rounded-sm gap-2.5"
       >
         <span className="text-lg font-medium">{title}</span>
-      
       </button>
       {isOpen && (
         <div className="py-4 bg-white text-gray-700 overflow-auto relative">
-            {children}
+          {children}
         </div>
       )}
     </div>
   );
-};
-
-export default Accordion;
+}

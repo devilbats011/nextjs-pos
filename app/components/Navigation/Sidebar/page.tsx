@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styles from "./Sidebar.module.css"; // Import the CSS Module
 import useStore from "@/hooks/zustand/useStore";
 import { useRouter } from "next/navigation";

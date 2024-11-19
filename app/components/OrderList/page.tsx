@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -27,10 +28,11 @@ import {
 import {
   billStatus,
 } from "@/hooks/helper/constant";
-import Accordion from "../Accordion/page";
+
 import Breadcrumb from "../Breadcrumb";
 import { pathNameProps } from "@/app/Interface/interface";
 import { useRouter } from "next/navigation";
+import Accordian from "../Accordion/accordian";
 
 const OrderList: React.FC<any> = ({
   ...rest
@@ -127,7 +129,6 @@ const OrderList: React.FC<any> = ({
                   <QuantityItem bill={_bill} disableAddRemoveButton={true} />
                   <ItemPrice price={item.price} bill={_bill} />
                   <ItemDeleteButton disableDeleteButton={true} />
-                  {/* @ts-ignore */}
                   <BillStatus bill={_bill} order={order} />
                 </div>
                 <ButtonsModels
@@ -325,7 +326,7 @@ function ButtonsModels({
 
       {isArrayNotEmpty(bill.bill_refund_details) && (
         <div className="mb-6">
-          <Accordion
+          <Accordian
             isOpen={isOpenRefundDetail}
             setIsOpen={setIsOpenRefundDetail}
             title="Refund Detail"
@@ -347,7 +348,7 @@ function ButtonsModels({
                   </div>
                 );
               })}
-          </Accordion>
+          </Accordian>
         </div>
       )}
     </>
@@ -403,11 +404,11 @@ function Models({
 
   const { ...dataStore } = useStore((state) => state);
 
-  function getQuantityRefunded(bill: BillProp) {
+  function getQuantityRefunded(bill: any) {
     if (isArrayEmpty(bill.bill_refund_details)) {
       return 0;
     }
-    const quantity = bill.bill_refund_details?.reduce((acc, refund) => {
+    const quantity = bill.bill_refund_details?.reduce((acc: any, refund: any) => {
       if (!refund.quantity) return acc + 0;
       const _quantity = parseIntOrNull(refund.quantity) ?? 0;
       return acc + _quantity;
@@ -419,7 +420,7 @@ function Models({
     if (!bill) {
       return 0;
     }
-    // @ts-ignore
+
     const resultQuantity = bill.item_quantity - getQuantityRefunded(bill);
     if (resultQuantity <= 0) {
       return 0;

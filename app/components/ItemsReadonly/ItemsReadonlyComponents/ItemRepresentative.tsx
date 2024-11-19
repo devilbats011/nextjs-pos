@@ -3,6 +3,7 @@ import React from "react";
 import ItemWrapper from "./ItemWrapper";
 import { ItemProps } from "@/hooks/zustand/interface/item";
 import { API_IMG } from "@/hooks/helper/constant";
+import Image from "next/image";
 
 const ItemRepresentative: React.FC<any> = ({
   item,
@@ -10,6 +11,7 @@ const ItemRepresentative: React.FC<any> = ({
 }: {
   item: ItemProps;
 }) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   if (rest.disableRepresentative) {
     return null;
@@ -28,7 +30,7 @@ const ItemRepresentative: React.FC<any> = ({
           }}
         ></div>
       ) : 
-      <img
+      <Image
       src={API_IMG + "/" + item.representation_image}
       alt={item.name}
       style={{

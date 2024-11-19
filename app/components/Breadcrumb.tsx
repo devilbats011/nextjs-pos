@@ -96,6 +96,7 @@ const Breadcrumb: React.FC<BreadcrumbProps<crumbPropsI>> = ({
 
   useEffect(() => {
     addingSlashOrHomeSVGToBreadcrumbs();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

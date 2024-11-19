@@ -1,6 +1,7 @@
-// app/components/Dropdown/page.tsx
-import { getObjectFromArrayById } from "@/hooks/helper/helper";
+'use client';
+
 import React, { useEffect, useState } from "react";
+
 
 interface DropdownItem {
   id?: string;
@@ -18,12 +19,12 @@ interface DropdownProps {
   defaultValue?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+export default function Dropdown({
   items,
   label,
   containerProps,
   defaultValue = "",
-}) => {
+}: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(defaultValue);
 
@@ -99,4 +100,3 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 };
 
-export default Dropdown;

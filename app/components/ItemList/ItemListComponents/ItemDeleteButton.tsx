@@ -10,7 +10,7 @@ import { isArrayNotEmpty } from "@/hooks/helper/helper";
 const ItemDeleteButton: React.FC<any> = ({ ...rest }) => {
   const router = useRouter();
   const { toaster } = useSonnerToast();
-  const { deleteGroupOrderItemsById, deleteOrderItem, groupedItemList } =
+  const { deleteGroupOrderItemsById, groupedItemList } =
     useStore((state) => state);
 
   const { item, set_items } = rest;

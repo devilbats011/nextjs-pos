@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
+import React, { useState } from "react";
 
 export default function InputSelectImage({
   useStateItem,
